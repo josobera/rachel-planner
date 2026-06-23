@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F5F2EA">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="My Day">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon.svg">
+<title>My Day</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,400;1,500;1,600&family=Mulish:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Mulish',-apple-system,'Segoe UI',sans-serif;background:#F5F2EA;color:#2C3E45;-webkit-font-smoothing:antialiased}
+  .app{max-width:440px;margin:0 auto;min-height:100vh;background:#F5F2EA;overflow-x:hidden}
+  .serif{font-family:'Lora',serif}
+  .hero{position:relative;background:linear-gradient(180deg,#F6F3EA 0%,#E6EFF0 100%);padding:calc(34px + env(safe-area-inset-top,0)) 22px 24px;overflow:hidden}
+  .wave{position:absolute;bottom:-6px;left:-20px;opacity:.4;pointer-events:none}
+  .eyebrow{font-weight:700;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#3F7E99}
+  .avatar{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.6);display:flex;align-items:center;justify-content:center;color:#8FB0B8;cursor:pointer}
+  .greet{font-family:'Lora',serif;font-weight:600;font-size:29px;line-height:1.12;color:#2C3E45;margin-top:12px}
+  .body{padding:17px 18px 30px;display:flex;flex-direction:column;gap:13px}
+  .card{background:#fff;border:1px solid #E6E2D6;border-radius:18px;padding:15px 16px;box-shadow:0 1px 6px rgba(44,62,69,.06)}
+  .lbl{font-weight:700;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:#3F7E99}
+  .pill{font-weight:700;font-size:9px;letter-spacing:.08em;text-transform:uppercase;border-radius:6px;padding:3px 7px}
+  .ck{width:20px;height:20px;border-radius:50%;border:1.6px solid #CBD9D3;flex:none;cursor:pointer;transition:.15s;position:relative}
+  .ck.done{background:#3F7E99;border-color:#3F7E99}
+  .ck.done::after{content:"";position:absolute;left:6px;top:3px;width:4px;height:8px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
+  .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-top:2px}
+  .tile{display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;background:none;border:none;padding:0;font-family:inherit}
+  .tile .ic{width:100%;height:74px;border-radius:16px;background:#fff;border:1px solid #E6E2D6;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 5px rgba(44,62,69,.06);transition:.15s}
+  .tile:active .ic{transform:scale(.96)}
+  .tile span{font-weight:600;font-size:11px;color:#5A7681}
+  .toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(16px);background:#2C3E45;color:#F5F2EA;font-size:13px;font-weight:600;padding:11px 18px;border-radius:14px;opacity:0;transition:.25s;pointer-events:none;z-index:99;box-shadow:0 8px 24px rgba(44,62,69,.25)}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="hero">
+    <div class="wave">
+      <svg width="460" height="150" viewBox="0 0 460 150" fill="none" stroke="#4E89A6" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
+        <path d="M-20 70Q40 48 100 70T220 70T340 70T460 70" opacity=".5"/>
+        <path d="M-20 96Q40 74 100 96T220 96T340 96T460 96" opacity=".4"/>
+        <path d="M-20 122Q40 100 100 122T220 122T340 122T460 122" opacity=".3"/>
+      </svg>
+    </div>
+
+    <div style="position:relative;display:flex;align-items:center;justify-content:space-between">
+      <span class="eyebrow" id="dateLabel">Tuesday · June 23</span>
+      <span class="avatar" onclick="toast('Settings — coming soon')" aria-label="Settings">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </span>
+    </div>
+
+    <div class="greet">Good morning, <span style="font-style:italic;font-weight:500">Rachel</span></div>
+
+    <div style="position:relative;display:flex;align-items:flex-end;justify-content:space-between;margin-top:14px">
+      <div>
+        <div class="serif" style="font-style:italic;font-size:16px;color:#5A7681">Sunny, warming to 86°</div>
+        <div style="display:flex;gap:14px;margin-top:10px;color:#93B3BE">
+          <span style="display:flex;align-items:center;gap:4px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3s6 7 6 11a6 6 0 0 1-12 0c0-4 6-11 6-11z"/></svg><span style="font-weight:700;font-size:11px;color:#41626C">54%</span></span>
+          <span style="display:flex;align-items:center;gap:4px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h12a3 3 0 1 0-3-3M3 16h16a3 3 0 1 1-3 3M3 12h7"/></svg><span style="font-weight:700;font-size:11px;color:#41626C">7 mph</span></span>
+          <span style="display:flex;align-items:center;gap:4px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><span style="font-weight:700;font-size:11px;color:#41626C">UV 6</span></span>
+        </div>
+      </div>
+      <div class="serif" style="font-weight:600;font-size:47px;line-height:.85;color:#2C3E45">73<span style="font-size:25px;vertical-align:top;color:#4E89A6">°</span></div>
+    </div>
+  </div>
+
+  <div class="body">
+
+    <div class="card" style="position:relative;overflow:hidden">
+      <div style="position:absolute;top:12px;right:13px;opacity:.5;pointer-events:none">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#D2A85E" stroke-width="1.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.4M12 19.1v2.4M3.6 3.6 5.3 5.3M18.7 18.7l1.7 1.7M2.5 12h2.4M19.1 12h2.4M3.6 20.4 5.3 18.7M18.7 5.3l1.7-1.7"/></svg>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px"><span style="width:7px;height:7px;border-radius:50%;background:#3F7E99"></span><span class="lbl">Daily verse</span></div>
+      <div class="serif" style="font-style:italic;font-size:16px;line-height:1.5;color:#2C3E45;margin-top:9px;max-width:280px">"Consider the lilies of the field, how they grow; they neither toil nor spin."</div>
+      <div style="font-weight:600;font-size:11px;color:#8AA0A3;margin-top:10px">— Matthew 6:28</div>
+    </div>
+
+    <div style="background:#E9F1F2;border:1px solid #D7E6E6;border-radius:18px;padding:14px 15px;box-shadow:0 1px 6px rgba(44,62,69,.05)">
+      <div style="display:flex;align-items:center;gap:9px">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#3F7E99" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="#3F7E99"/><path d="M12 3v2M12 19v2M4.5 4.5 6 6M18 18l1.5 1.5M3 12h2M19 12h2M4.5 19.5 6 18M18 6l1.5-1.5"/></svg>
+        <span class="serif" style="font-weight:600;font-size:18px;color:#2C3E45">Today</span>
+        <span style="margin-left:auto;font-weight:700;font-size:11px;color:#3F7E99;background:#D7E6E6;border-radius:10px;padding:4px 9px">3</span>
+      </div>
+      <div id="tasks" style="margin-top:13px;display:flex;flex-direction:column;gap:12px"></div>
+    </div>
+
+    <div class="card">
+      <div style="display:flex;align-items:flex-start;gap:11px">
+        <div style="text-align:center;flex:none">
+          <div class="serif" style="font-weight:600;font-size:25px;line-height:.9;color:#2C3E45">7:45</div>
+          <div style="font-weight:700;font-size:9px;letter-spacing:.1em;color:#7FA0A8;margin-top:3px">AM</div>
+        </div>
+        <div style="width:1px;align-self:stretch;background:#E6E2D6"></div>
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:700;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:#3F7E99">Next up</div>
+          <div class="serif" style="font-weight:600;font-size:17px;color:#2C3E45;margin-top:4px">School drop-off</div>
+          <div style="font-weight:500;font-size:12px;color:#8AA0A3;margin-top:5px">Jackson & Pearson · until 8:15</div>
+        </div>
+        <span style="font-weight:700;font-size:10px;color:#3F7E99;background:#E3EFF1;border-radius:9px;padding:5px 8px;flex:none">+1 more</span>
+      </div>
+      <div style="border-top:1px solid #E6E2D6;margin-top:12px;padding-top:11px;display:flex;align-items:center;gap:10px">
+        <span style="font-weight:700;font-size:13px;color:#2C3E45;flex:none">2:00<span style="font-weight:500;color:#8AA0A3;font-size:10px"> PM</span></span>
+        <span style="width:7px;height:7px;border-radius:50%;background:#B2925F;flex:none"></span>
+        <div style="flex:1;min-width:0;font-weight:500;font-size:13px;color:#2C3E45">Pearson — dentist, Dr. Alvarez</div>
+        <span style="font-weight:500;font-size:11px;color:#8AA0A3">Cherry St.</span>
+      </div>
+    </div>
+
+    <div style="font-weight:600;font-size:13px;color:#5A7681;margin:4px 2px 0">Jump to</div>
+    <div class="tiles" id="tiles"></div>
+
+  </div>
+</div>
+<div class="toast" id="toastEl"></div>
+
+<script>
+  const ICONS = {
+    tasks:'<polyline points="4 7 5 8 7 6"/><path d="M10 7h10"/><polyline points="4 12 5 13 7 11"/><path d="M10 12h10"/><polyline points="4 17 5 18 7 16"/><path d="M10 17h10"/>',
+    calendar:'<rect x="3" y="4.5" width="18" height="16" rx="2.5"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/>',
+    kids:'<circle cx="12" cy="12" r="9"/><path d="M8.5 14.5a4.5 4.5 0 0 0 7 0"/><circle cx="9" cy="10.2" r=".7" fill="currentColor"/><circle cx="15" cy="10.2" r=".7" fill="currentColor"/>',
+    grocery:'<path d="M6 8h12l-1 12H7L6 8z"/><path d="M9 8a3 3 0 0 1 6 0"/>',
+    dining:'<path d="M5 3v5a2 2 0 0 0 4 0V3M7 3v18"/><path d="M16.5 3c-1.4 0-2 2.5-2 5s.6 3.5 2 3.5 2-1 2-3.5-.6-5-2-5zM16.5 11.5V21"/>',
+    travel:'<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>',
+    wellness:'<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.7-7.5 1.1-1.1a5.5 5.5 0 0 0 0-7.8z"/>',
+    prayer:'<path d="M12 6.4C10.5 5 8 4.5 4 4.5v13c4 0 6.5.5 8 2 1.5-1.5 4-2 8-2v-13c-4 0-6.5.5-8 1.9zM12 6.4V21"/>',
+    home:'<path d="M3.6 11.5 12 4l8.4 7.5M5.6 9.8V20h12.8V9.8"/><path d="M10 20v-5h4v5"/>'
+  };
+  const TILES = [
+    ['tasks','Tasks','#3F7E99'],['calendar','Family calendar','#4E89A6'],['kids','Kids','#B2925F'],
+    ['grocery','Grocery','#D99B6C'],['dining','Reservations','#5FA39B'],['travel','Travel','#357A8C'],
+    ['wellness','Wellness','#3F7E99'],['prayer','Prayer','#4E89A6'],['home','Smart home','#B2925F']
+  ];
+  const TASKS = [
+    {text:"Pick up Jackson from soccer", cat:"Family",  meta:"· 4:30 PM",  bullet:"#B2925F", pillC:"#9A7B4C", pillBg:"#F0E8D7"},
+    {text:"Send Laura the Thursday plan", cat:"Nanny",   meta:"· today",    bullet:"#3F7E99", pillC:"#357A8C", pillBg:"#E3EFF1"},
+    {text:"Order Pearson's K supplies",   cat:"Kids",    meta:"· tomorrow", bullet:"#4E89A6", pillC:"#4E89A6", pillBg:"#E6F0F2"}
+  ];
+  const sun = c => `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="1.7" stroke-linecap="round" style="flex:none"><circle cx="12" cy="12" r="4" fill="${c}"/><path d="M12 3v2.2M12 18.8V21M4.5 4.5 6 6M18 18l1.5 1.5M3 12h2.2M18.8 12H21M4.5 19.5 6 18M18 6l1.5-1.5"/></svg>`;
+
+  document.getElementById('tasks').innerHTML = TASKS.map(t => `
+    <div style="display:flex;align-items:center;gap:11px">
+      ${sun(t.bullet)}
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:500;font-size:14px;color:#2C3E45">${t.text}</div>
+        <div style="display:flex;align-items:center;gap:7px;margin-top:4px">
+          <span class="pill" style="color:${t.pillC};background:${t.pillBg}">${t.cat}</span>
+          <span style="font-weight:500;font-size:11px;color:#8AA0A3">${t.meta}</span>
+        </div>
+      </div>
+      <span class="ck" role="button" aria-label="Mark done" onclick="this.classList.toggle('done')"></span>
+    </div>`).join('');
+
+  document.getElementById('tiles').innerHTML = TILES.map(([k,label,c]) => `
+    <button class="tile" onclick="toast('${label} — building this next')">
+      <span class="ic" style="color:${c}"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${ICONS[k]}</svg></span>
+      <span>${label}</span>
+    </button>`).join('');
+
+  let tt;
+  function toast(msg){ const e=document.getElementById('toastEl'); e.textContent=msg; e.classList.add('show'); clearTimeout(tt); tt=setTimeout(()=>e.classList.remove('show'),1900); }
+
+  (function(){ const d=new Date(); const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']; const mons=['January','February','March','April','May','June','July','August','September','October','November','December']; document.getElementById('dateLabel').textContent = days[d.getDay()] + ' · ' + mons[d.getMonth()] + ' ' + d.getDate(); })();
+</script>
+</body>
+</html>

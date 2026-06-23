@@ -1,0 +1,13 @@
+{
+  "name": "My Day",
+  "short_name": "My Day",
+  "description": "Rachel's personal planner",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F5F2EA",
+  "theme_color": "#F5F2EA",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

@@ -126,10 +126,10 @@
   const ICONS = {
     tasks:'<polyline points="4 7 5 8 7 6"/><path d="M10 7h10"/><polyline points="4 12 5 13 7 11"/><path d="M10 12h10"/><polyline points="4 17 5 18 7 16"/><path d="M10 17h10"/>',
     calendar:'<rect x="3" y="4.5" width="18" height="16" rx="2.5"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/>',
-    kids:'<g fill="currentColor" stroke="none"><circle cx="5.5" cy="6" r="2"/><rect x="3.3" y="7.6" width="4.4" height="11.4" rx="2.2"/><circle cx="12" cy="7.6" r="2"/><rect x="9.8" y="9.2" width="4.4" height="9.8" rx="2.2"/><circle cx="18.5" cy="9" r="2"/><rect x="16.3" y="10.6" width="4.4" height="8.4" rx="2.2"/></g>',
-    grocery:'<path d="M6 8h12l-1 12H7L6 8z"/><path d="M9 8a3 3 0 0 1 6 0"/>',
+    kids:'<g fill="currentColor" stroke="currentColor"><circle cx="8" cy="4" r="3.1" stroke="none"/><rect x="5.5" y="6.3" width="5" height="8.2" rx="2.5" stroke="none"/><path d="M6.3 8.2 3.3 13.6M9.7 8.2 12.7 13.6" fill="none" stroke-width="2.8" stroke-linecap="round"/><path d="M6.8 14.2 5.5 20.6M9.2 14.2 10.5 20.6" fill="none" stroke-width="3" stroke-linecap="round"/><circle cx="22" cy="4" r="3.1" stroke="none"/><rect x="19.5" y="6.3" width="5" height="8.2" rx="2.5" stroke="none"/><path d="M20.3 8.2 17.3 13.6M23.7 8.2 26.7 13.6" fill="none" stroke-width="2.8" stroke-linecap="round"/><path d="M20.8 14.2 19.5 20.6M23.2 14.2 24.5 20.6" fill="none" stroke-width="3" stroke-linecap="round"/><circle cx="36" cy="4" r="3.1" stroke="none"/><rect x="33.5" y="6.3" width="5" height="8.2" rx="2.5" stroke="none"/><path d="M34.3 8.2 31.3 13.6M37.7 8.2 40.7 13.6" fill="none" stroke-width="2.8" stroke-linecap="round"/><path d="M34.8 14.2 33.5 20.6M37.2 14.2 38.5 20.6" fill="none" stroke-width="3" stroke-linecap="round"/></g>',
+    grocery:'<path d="M17 17H6V3H4"/><path d="M6 5l14 1-1 7H6"/><circle cx="7" cy="19.5" r="1.6"/><circle cx="16.5" cy="19.5" r="1.6"/>',
     dining:'<path d="M5 3v5a2 2 0 0 0 4 0V3M7 3v18"/><path d="M16.5 3c-1.4 0-2 2.5-2 5s.6 3.5 2 3.5 2-1 2-3.5-.6-5-2-5zM16.5 11.5V21"/>',
-    travel:'<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>',
+    travel:'<rect x="3.5" y="7.5" width="17" height="12.5" rx="2.5"/><path d="M8.5 7.5V5.6a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v1.9"/><path d="M12 7.5v12.5"/>',
     wellness:'<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.7-7.5 1.1-1.1a5.5 5.5 0 0 0 0-7.8z"/>',
     prayer:'<path d="M12 6.4C10.5 5 8 4.5 4 4.5v13c4 0 6.5.5 8 2 1.5-1.5 4-2 8-2v-13c-4 0-6.5.5-8 1.9zM12 6.4V21"/>',
     home:'<path d="M3.6 11.5 12 4l8.4 7.5M5.6 9.8V20h12.8V9.8"/><path d="M10 20v-5h4v5"/>'
@@ -161,7 +161,9 @@
 
   document.getElementById('tiles').innerHTML = TILES.map(([k,label,c,url]) => `
     <button class="tile" onclick="${url ? `location.href='${url}'` : `toast('${label} — building this next')`}">
-      <span class="ic" style="color:${c}"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${ICONS[k]}</svg></span>
+      <span class="ic" style="color:${c}">${k === 'kids'
+        ? `<svg width="55" height="30" viewBox="0 0 44 24" aria-hidden="true">${ICONS.kids}</svg>`
+        : `<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${ICONS[k]}</svg>`}</span>
       <span>${label}</span>
     </button>`).join('');
 

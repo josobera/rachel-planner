@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F5F2EA">
+<title>Kids · My Day</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,400;1,500&family=Mulish:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Mulish',-apple-system,'Segoe UI',sans-serif;background:#F5F2EA;color:#2C3E45;-webkit-font-smoothing:antialiased}
+  .app{max-width:440px;margin:0 auto;min-height:100vh;background:#F5F2EA;overflow-x:hidden}
+  .serif{font-family:'Lora',serif}
+  .top{position:sticky;top:0;z-index:10;background:rgba(245,242,234,.92);backdrop-filter:blur(8px);display:flex;align-items:center;gap:12px;padding:calc(14px + env(safe-area-inset-top,0)) 18px 12px;border-bottom:1px solid #E6E2D6}
+  .back{width:36px;height:36px;border-radius:50%;background:#fff;border:1px solid #E6E2D6;display:flex;align-items:center;justify-content:center;color:#3F7E99;cursor:pointer;text-decoration:none;font-size:22px;line-height:1;padding-bottom:3px}
+  .body{padding:16px 18px 32px;display:flex;flex-direction:column;gap:14px}
+  .card{background:#fff;border:1px solid #E6E2D6;border-radius:18px;padding:16px;box-shadow:0 1px 6px rgba(44,62,69,.06)}
+  .lbl{font-weight:700;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:#3F7E99}
+  .kidsel{display:flex;gap:14px;overflow-x:auto;padding:4px 2px 2px}
+  .kidchip{flex:none;display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;background:none;border:none;font-family:inherit}
+  .kidchip .av{width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Lora',serif;font-weight:600;font-size:23px;color:#fff;border:3px solid transparent;transition:.15s}
+  .kidchip.active .av{box-shadow:0 0 0 3px #F5F2EA,0 0 0 6px #3F7E99}
+  .kidchip span{font-weight:600;font-size:12px;color:#8AA0A3}
+  .kidchip.active span{color:#2C3E45}
+  .sizes{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:13px}
+  .size{background:#F2F6F5;border:1px solid #E2EBE9;border-radius:13px;padding:11px 13px;cursor:pointer;transition:.15s}
+  .size:active{transform:scale(.97)}
+  .size .k{font-weight:600;font-size:11px;color:#8AA0A3}
+  .size .v{font-family:'Lora',serif;font-weight:600;font-size:24px;color:#2C3E45;margin-top:1px}
+  .row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #F0EEE5}
+  .row:last-child{border-bottom:none}
+  .toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(16px);background:#2C3E45;color:#F5F2EA;font-size:13px;font-weight:600;padding:11px 18px;border-radius:14px;opacity:0;transition:.25s;pointer-events:none;z-index:99;box-shadow:0 8px 24px rgba(44,62,69,.25)}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <a class="back" href="index.html" aria-label="Back to home">&lsaquo;</a>
+    <span class="serif" style="font-weight:600;font-size:22px">Kids</span>
+    <span style="margin-left:auto;font-weight:600;font-size:13px;color:#8AA0A3" id="ageHint"></span>
+  </div>
+  <div class="body">
+    <div class="kidsel" id="kidsel"></div>
+    <div id="detail" style="display:flex;flex-direction:column;gap:14px"></div>
+  </div>
+</div>
+<div class="toast" id="toastEl"></div>
+
+<script>
+  const KIDS = [
+    {name:'Jackson', age:8, color:'#3F7E99', school:'3rd grade · Liberty Park Elementary',
+     sizes:{Shirt:'8', Pants:'8', Shoe:'2.5Y', Jacket:'8'},
+     activities:[['Soccer','Tue & Thu · 4:30'],['Swim team','Sat · 9:00']],
+     notes:'Loves dinosaurs and Legos. Into chapter books right now.'},
+    {name:'Pearson', age:4, color:'#5FA39B', school:'Starting kindergarten · Liberty Park',
+     sizes:{Shirt:'5T', Pants:'5T', Shoe:'11C', Jacket:'5'},
+     activities:[['T-ball','Sat · 10:00']],
+     notes:'Trucks and soccer. Starts kindergarten in the fall.'},
+    {name:'Parker', age:3, color:'#B2925F', school:'PALS Mother’s Day Out',
+     sizes:{Shirt:'4T', Pants:'3T', Shoe:'9C', Jacket:'4'},
+     activities:[['PALS MDO','Mon & Wed']],
+     notes:'Loves being read to and the splash pad.'}
+  ];
+  let sel = 0;
+
+  function renderSel(){
+    document.getElementById('kidsel').innerHTML = KIDS.map((k,i)=>`
+      <button class="kidchip ${i===sel?'active':''}" onclick="sel=${i};render()">
+        <span class="av" style="background:${k.color}">${k.name[0]}</span>
+        <span>${k.name}</span>
+      </button>`).join('');
+  }
+
+  function renderDetail(){
+    const k = KIDS[sel];
+    document.getElementById('ageHint').textContent = '3 kids';
+    document.getElementById('detail').innerHTML = `
+      <div class="card">
+        <div class="serif" style="font-weight:600;font-size:24px">${k.name}<span style="font-size:15px;color:#8AA0A3;font-weight:500"> · age ${k.age}</span></div>
+        <div style="font-weight:500;font-size:13px;color:#5A7681;margin-top:4px">${k.school}</div>
+      </div>
+
+      <div class="card">
+        <div style="display:flex;align-items:center"><span class="lbl">Sizes</span><span style="margin-left:auto;font-weight:500;font-size:11px;color:#8AA0A3">tap to update</span></div>
+        <div class="sizes">
+          ${Object.entries(k.sizes).map(([key,val])=>`
+            <div class="size" onclick="toast('Editing sizes comes with your live data')">
+              <div class="k">${key}</div><div class="v">${val}</div>
+            </div>`).join('')}
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="lbl">Activities</span>
+        <div style="margin-top:8px">
+          ${k.activities.map(([a,when])=>`
+            <div class="row">
+              <span style="width:8px;height:8px;border-radius:50%;background:${k.color};flex:none"></span>
+              <span style="flex:1;font-weight:500;font-size:14px">${a}</span>
+              <span style="font-weight:500;font-size:12px;color:#8AA0A3">${when}</span>
+            </div>`).join('')}
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="lbl">Notes & gift ideas</span>
+        <div class="serif" style="font-style:italic;font-size:15px;line-height:1.5;color:#2C3E45;margin-top:8px">${k.notes}</div>
+      </div>`;
+  }
+
+  function render(){ renderSel(); renderDetail(); }
+  let tt;
+  function toast(m){ const e=document.getElementById('toastEl'); e.textContent=m; e.classList.add('show'); clearTimeout(tt); tt=setTimeout(()=>e.classList.remove('show'),1900); }
+  render();
+</script>
+</body>
+</html>

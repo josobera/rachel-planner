@@ -135,7 +135,7 @@
     home:'<path d="M3.6 11.5 12 4l8.4 7.5M5.6 9.8V20h12.8V9.8"/><path d="M10 20v-5h4v5"/>'
   };
   const TILES = [
-    ['tasks','Tasks','#3F7E99'],['calendar','Family calendar','#4E89A6'],['kids','Kids','#B2925F'],
+    ['tasks','Tasks','#3F7E99'],['calendar','Family calendar','#4E89A6'],['kids','Kids','#B2925F','kids.html'],
     ['grocery','Grocery','#D99B6C'],['dining','Reservations','#5FA39B'],['travel','Travel','#357A8C'],
     ['wellness','Wellness','#3F7E99'],['prayer','Prayer','#4E89A6'],['home','Smart home','#B2925F']
   ];
@@ -159,8 +159,8 @@
       <span class="ck" role="button" aria-label="Mark done" onclick="this.classList.toggle('done')"></span>
     </div>`).join('');
 
-  document.getElementById('tiles').innerHTML = TILES.map(([k,label,c]) => `
-    <button class="tile" onclick="toast('${label} — building this next')">
+  document.getElementById('tiles').innerHTML = TILES.map(([k,label,c,url]) => `
+    <button class="tile" onclick="${url ? `location.href='${url}'` : `toast('${label} — building this next')`}">
       <span class="ic" style="color:${c}"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${ICONS[k]}</svg></span>
       <span>${label}</span>
     </button>`).join('');

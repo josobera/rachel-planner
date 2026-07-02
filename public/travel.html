@@ -696,6 +696,8 @@ function saveTrip() {
     closeSheet('sheet-trip');
     showDetail(trip.id);
   }
+  // Sync updated trips to push worker
+  syncTripsToPush();
 }
 
 function deleteCurrentTrip() {
@@ -1309,6 +1311,24 @@ document.getElementById('ts-name').addEventListener('keydown', e=>{ if(e.key==='
 document.getElementById('ai-name').addEventListener('keydown', e=>{ if(e.key==='Enter') addCustomItem(); });
 document.getElementById('atd-text').addEventListener('keydown', e=>{ if(e.key==='Enter') addTodo(); });
 document.getElementById('api-key-input').addEventListener('keydown', e=>{ if(e.key==='Enter') saveApiKey(); });
+
+// ══════════════════════════════════════════════════
+// PUSH SYNC
+// ══════════════════════════════════════════════════
+async function syncTripsToPush() {
+  if (!('serviceWorker' in navigator)) return;
+  try {
+    const reg = await navigator.serviceWorker.ready;
+    const sub = await reg.pushManager.getSubscription();
+    if (!sub) return;
+    const trips = getTrips();
+    fetch('https://rachel-planner-worker.jennysobera.workers.dev/sync-trips', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ subscriptionEndpoint: sub.endpoint, trips })
+    });
+  } catch (e) {}
+}
 
 // ══════════════════════════════════════════════════
 // INIT

@@ -171,6 +171,55 @@
   function toast(msg){ const e=document.getElementById('toastEl'); e.textContent=msg; e.classList.add('show'); clearTimeout(tt); tt=setTimeout(()=>e.classList.remove('show'),1900); }
 
   (function(){ const d=new Date(); const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']; const mons=['January','February','March','April','May','June','July','August','September','October','November','December']; document.getElementById('dateLabel').textContent = days[d.getDay()] + ' · ' + mons[d.getMonth()] + ' ' + d.getDate(); })();
+
+  // ── Push notifications ──────────────────────────────────────────────────────
+  const WORKER = 'https://rachel-planner-worker.jennysobera.workers.dev';
+
+  async function setupPush() {
+    if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
+
+    // Register service worker
+    const reg = await navigator.serviceWorker.register('/sw.js');
+    await navigator.serviceWorker.ready;
+
+    // Check if already subscribed
+    let sub = await reg.pushManager.getSubscription();
+    if (sub) { syncTripsToWorker(sub); return; }
+
+    // Request permission
+    const perm = await Notification.requestPermission();
+    if (perm !== 'granted') return;
+
+    // Get VAPID public key
+    const keyRes = await fetch(WORKER + '/vapid-public-key');
+    const { key } = await keyRes.json();
+    const appKey = Uint8Array.from(atob(key.replace(/-/g,'+').replace(/_/g,'/')), c => c.charCodeAt(0));
+
+    // Subscribe
+    sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: appKey });
+    await fetch(WORKER + '/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ subscription: sub.toJSON() })
+    });
+
+    syncTripsToWorker(sub);
+  }
+
+  function syncTripsToWorker(sub) {
+    try {
+      const trips = JSON.parse(localStorage.getItem('rachel.trips') || '[]');
+      if (!trips.length) return;
+      fetch(WORKER + '/sync-trips', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ subscriptionEndpoint: sub.endpoint, trips })
+      });
+    } catch (e) {}
+  }
+
+  // Run after a short delay so page loads first
+  setTimeout(setupPush, 2000);
 </script>
 </body>
 </html>

@@ -2,632 +2,1318 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#F5F2EA">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>Travel · My Day</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Travel — Rachel's Planner</title>
+<link rel="manifest" href="/manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,400;1,500;1,600&family=Mulish:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600&family=Mulish:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:'Mulish',-apple-system,'Segoe UI',sans-serif;background:#F5F2EA;color:#2C3E45;-webkit-font-smoothing:antialiased}
-  .app{max-width:440px;margin:0 auto;min-height:100vh;background:#F5F2EA}
-  .serif{font-family:'Lora',serif}
+:root {
+  --bg: #F5F2EA; --surface: #FFFFFF; --border: #E6E2D6;
+  --ink: #2C3E45; --ink-muted: #6B7C84;
+  --sea: #3F7E99; --sea-light: #EBF3F7; --sea-dark: #2E6178;
+  --sand: #C9B99A;
+  --font-serif: 'Lora', Georgia, serif;
+  --font-sans: 'Mulish', system-ui, sans-serif;
+  --radius: 12px; --radius-sm: 8px;
+  --shadow: 0 1px 4px rgba(44,62,69,.08), 0 2px 12px rgba(44,62,69,.06);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); background: var(--bg); color: var(--ink);
+  min-height: 100dvh; -webkit-tap-highlight-color: transparent; }
 
-  /* Header */
-  .header{position:sticky;top:0;z-index:20;background:#F5F2EA;border-bottom:1px solid #E6E2D6;padding:calc(14px + env(safe-area-inset-top,0)) 18px 12px;display:flex;align-items:center;gap:12px}
-  .back{width:34px;height:34px;border-radius:50%;background:#fff;border:1px solid #E6E2D6;display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none;color:#3F7E99}
-  .header-title{font-family:'Lora',serif;font-weight:600;font-size:20px;color:#2C3E45;flex:1}
-  .add-trip-btn{background:#3F7E99;color:#fff;border:none;border-radius:10px;padding:7px 13px;font-family:'Mulish',sans-serif;font-weight:700;font-size:12px;cursor:pointer;flex:none}
+/* NAV */
+.top-nav { position: sticky; top: 0; z-index: 100; background: var(--surface);
+  border-bottom: 1px solid var(--border); display: flex; align-items: center;
+  padding: 0 16px; height: 56px; gap: 12px; }
+.nav-back { background: none; border: none; cursor: pointer; display: flex;
+  align-items: center; gap: 6px; color: var(--sea); font-family: var(--font-sans);
+  font-size: 15px; font-weight: 500; padding: 8px 0; }
+.nav-title { font-family: var(--font-serif); font-size: 18px; color: var(--ink); flex: 1; text-align: center; }
+.icon-btn { background: none; border: none; cursor: pointer; color: var(--ink-muted);
+  padding: 6px; display: flex; align-items: center; justify-content: center; }
+.icon-btn svg { width: 18px; height: 18px; }
+.icon-btn.danger { color: #E53E3E; }
 
-  /* Trip card */
-  .body{padding:16px 18px 100px;display:flex;flex-direction:column;gap:14px}
-  .trip-card{background:#fff;border:1px solid #E6E2D6;border-radius:18px;padding:16px;box-shadow:0 1px 6px rgba(44,62,69,.06);cursor:pointer;position:relative;overflow:hidden}
-  .trip-card-empty{text-align:center;padding:28px 20px}
-  .trip-type-badge{display:inline-flex;align-items:center;gap:5px;background:#E3EFF1;border-radius:8px;padding:4px 10px;font-weight:700;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#3F7E99;margin-bottom:10px}
-  .trip-name{font-family:'Lora',serif;font-weight:600;font-size:20px;color:#2C3E45}
-  .trip-dest{font-weight:600;font-size:13px;color:#5A7681;margin-top:3px}
-  .trip-dates{font-weight:500;font-size:12px;color:#8AA0A3;margin-top:5px}
-  .trip-progress{margin-top:12px}
-  .progress-bar-track{height:6px;border-radius:3px;background:#E6EFF0;overflow:hidden}
-  .progress-bar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#3F7E99,#6AACBE);transition:.3s}
-  .progress-label{display:flex;justify-content:space-between;font-weight:700;font-size:11px;color:#8AA0A3;margin-top:6px}
-  .progress-label span{color:#3F7E99}
+/* TRIP LIST */
+.trip-list { padding: 20px 16px 100px; }
+.section-label { font-size: 11px; font-weight: 700; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--ink-muted); margin-bottom: 10px; }
+.trip-card { background: var(--surface); border-radius: var(--radius);
+  border: 1px solid var(--border); box-shadow: var(--shadow);
+  padding: 16px; margin-bottom: 12px; cursor: pointer; }
+.trip-card-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--sea); margin-bottom: 4px; }
+.trip-card-name { font-family: var(--font-serif); font-size: 17px;
+  font-weight: 600; color: var(--ink); margin-bottom: 6px; }
+.trip-card-meta, .trip-card-dest { font-size: 13px; color: var(--ink-muted); }
+.trip-card-dest { margin-top: 2px; }
+.empty-state { text-align: center; padding: 60px 20px;
+  color: var(--ink-muted); font-size: 15px; line-height: 1.6; }
+.empty-state-title { font-family: var(--font-serif); font-size: 20px;
+  color: var(--ink); margin-bottom: 8px; }
 
-  /* Tabs */
-  .tabs{display:flex;gap:8px;background:#fff;border:1px solid #E6E2D6;border-radius:14px;padding:4px}
-  .tab{flex:1;padding:8px;border-radius:10px;border:none;background:none;font-family:'Mulish',sans-serif;font-weight:700;font-size:13px;color:#8AA0A3;cursor:pointer;transition:.15s;display:flex;align-items:center;justify-content:center;gap:6px}
-  .tab.active{background:#3F7E99;color:#fff}
-  .tab-count{font-size:10px;background:rgba(255,255,255,.25);border-radius:6px;padding:1px 6px;min-width:22px;text-align:center}
-  .tab:not(.active) .tab-count{background:#E6EFF0;color:#3F7E99}
+/* ADD TRIP BTN */
+.add-trip-btn { position: fixed; bottom: 84px; right: 20px; z-index: 50;
+  width: 52px; height: 52px; border-radius: 50%; background: var(--sea);
+  color: #fff; border: none; cursor: pointer;
+  box-shadow: 0 4px 16px rgba(63,126,153,.4);
+  display: flex; align-items: center; justify-content: center; }
+.add-trip-btn svg { width: 24px; height: 24px; }
 
-  /* Category sections */
-  .cat-section{background:#fff;border:1px solid #E6E2D6;border-radius:18px;overflow:hidden;box-shadow:0 1px 6px rgba(44,62,69,.06)}
-  .cat-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;cursor:pointer;user-select:none}
-  .cat-label{font-weight:700;font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:#3F7E99;display:flex;align-items:center;gap:7px}
-  .cat-chevron{color:#B2C8CD;transition:.2s;flex:none}
-  .cat-body{border-top:1px solid #F0ECE4}
-  .item-row{display:flex;align-items:center;gap:12px;padding:11px 16px;border-bottom:1px solid #F0ECE4;cursor:pointer;transition:.1s}
-  .item-row:last-child{border-bottom:none}
-  .item-row:active{background:#F8F6F2}
-  .ck{width:22px;height:22px;border-radius:50%;border:1.8px solid #CBD9D3;flex:none;position:relative;transition:.15s}
-  .ck.packed{background:#3F7E99;border-color:#3F7E99}
-  .ck.packed::after{content:"";position:absolute;left:7px;top:4px;width:5px;height:9px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
-  .ck.na{background:#E6E2D6;border-color:#E6E2D6}
-  .ck.na::after{content:"—";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#8AA0A3}
-  .item-text{flex:1;font-weight:600;font-size:14px;color:#2C3E45;transition:.15s}
-  .item-text.packed{color:#B2C8CD;text-decoration:line-through;text-decoration-color:#B2C8CD}
-  .item-notes{font-weight:500;font-size:11px;color:#8AA0A3}
+/* DETAIL */
+#detail-view { display: none; }
+#detail-view.active { display: block; }
+#list-view.hidden { display: none; }
 
-  /* Add item */
-  .add-row{display:flex;align-items:center;gap:10px;padding:11px 16px;border-top:1px solid #F0ECE4;cursor:pointer}
-  .add-row-plus{width:22px;height:22px;border-radius:50%;border:1.8px dashed #B2C8CD;display:flex;align-items:center;justify-content:center;flex:none;color:#B2C8CD}
-  .add-row span{font-weight:600;font-size:13px;color:#8AA0A3}
+/* HERO */
+.hero { background: var(--surface); border-bottom: 1px solid var(--border); padding: 14px 16px 0; }
+.hero-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--sea); margin-bottom: 6px; }
+.hero-name { font-family: var(--font-serif); font-size: 22px; font-weight: 600;
+  color: var(--ink); background: none; border: none; outline: none; width: 100%;
+  border-bottom: 1.5px solid transparent; padding: 2px 0; margin-bottom: 10px;
+  transition: border-color .15s; }
+.hero-name:focus { border-bottom-color: var(--sea); }
+.hero-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.chip { display: flex; align-items: center; gap: 5px; background: var(--sea-light);
+  color: var(--sea); border-radius: 20px; padding: 5px 11px;
+  font-size: 13px; font-weight: 500; cursor: pointer; border: 1px solid transparent;
+  white-space: nowrap; font-family: var(--font-sans); }
+.chip svg { width: 13px; height: 13px; flex-shrink: 0; }
+.weather-prose { font-size: 13px; color: var(--ink-muted); line-height: 1.5;
+  padding: 0 0 14px; font-style: italic; }
 
-  /* FAB */
-  .fab{position:fixed;bottom:calc(28px + env(safe-area-inset-bottom,0));right:20px;background:#3F7E99;color:#fff;border:none;border-radius:16px;padding:13px 18px;font-family:'Mulish',sans-serif;font-weight:700;font-size:13px;cursor:pointer;box-shadow:0 4px 16px rgba(63,126,153,.35);display:flex;align-items:center;gap:7px;z-index:10}
+/* Location autocomplete */
+.loc-wrap { position: relative; }
+.loc-dropdown { position: absolute; top: calc(100% + 4px); left: 0; right: 0; min-width: 240px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm);
+  box-shadow: var(--shadow); z-index: 200; overflow: hidden; display: none; }
+.loc-dropdown.open { display: block; }
+.loc-option { padding: 10px 14px; font-size: 14px; cursor: pointer;
+  border-bottom: 1px solid var(--border); }
+.loc-option:last-child { border-bottom: none; }
+.loc-option:active { background: var(--sea-light); }
 
-  /* Modal overlay */
-  .overlay{position:fixed;inset:0;background:rgba(44,62,69,.45);z-index:30;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:.2s}
-  .overlay.show{opacity:1;pointer-events:all}
-  .sheet{background:#F5F2EA;border-radius:24px 24px 0 0;padding:20px 20px calc(32px + env(safe-area-inset-bottom,0));width:100%;transform:translateY(24px);transition:.25s;max-height:92vh;overflow-y:auto}
-  .overlay.show .sheet{transform:translateY(0)}
-  .sheet-handle{width:36px;height:4px;border-radius:2px;background:#D5D0C8;margin:0 auto 20px}
-  .sheet-title{font-family:'Lora',serif;font-weight:600;font-size:20px;color:#2C3E45;margin-bottom:18px}
-  .field-label{font-weight:700;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:#3F7E99;margin-bottom:6px}
-  .field-input{width:100%;background:#fff;border:1.5px solid #D5D0C8;border-radius:12px;padding:11px 13px;font-family:'Mulish',sans-serif;font-size:14px;color:#2C3E45;outline:none;margin-bottom:14px}
-  .field-input:focus{border-color:#3F7E99}
-  .type-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
-  .type-btn{padding:9px 6px;border-radius:10px;border:1.5px solid #D5D0C8;background:#fff;font-family:'Mulish',sans-serif;font-weight:700;font-size:11px;color:#5A7681;cursor:pointer;text-align:center;transition:.15s}
-  .type-btn.sel{background:#E3EFF1;border-color:#3F7E99;color:#3F7E99}
-  .btn-primary{width:100%;background:#3F7E99;color:#fff;border:none;border-radius:13px;padding:14px;font-family:'Mulish',sans-serif;font-weight:700;font-size:14px;cursor:pointer;margin-top:4px}
-  .btn-secondary{width:100%;background:none;border:1.5px solid #D5D0C8;border-radius:13px;padding:13px;font-family:'Mulish',sans-serif;font-weight:700;font-size:14px;cursor:pointer;color:#5A7681;margin-top:8px}
+/* TAB BAR */
+.tab-bar { display: flex; background: var(--surface); border-bottom: 1px solid var(--border);
+  overflow-x: auto; scrollbar-width: none; }
+.tab-bar::-webkit-scrollbar { display: none; }
+.tab-btn { flex: 1; min-width: 70px; padding: 12px 8px; background: none; border: none;
+  cursor: pointer; font-family: var(--font-sans); font-size: 13px; font-weight: 600;
+  color: var(--ink-muted); border-bottom: 2.5px solid transparent;
+  transition: color .15s, border-color .15s; white-space: nowrap; }
+.tab-btn.active { color: var(--sea); border-bottom-color: var(--sea); }
 
-  /* Category select chips */
-  .cat-chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px}
-  .cat-chip{padding:6px 12px;border-radius:8px;border:1.5px solid #D5D0C8;background:#fff;font-family:'Mulish',sans-serif;font-weight:700;font-size:11px;color:#5A7681;cursor:pointer}
-  .cat-chip.sel{background:#E3EFF1;border-color:#3F7E99;color:#3F7E99}
+/* TAB PANELS */
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
 
-  /* Toast */
-  .toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%) translateY(16px);background:#2C3E45;color:#F5F2EA;font-size:13px;font-weight:600;padding:11px 18px;border-radius:14px;opacity:0;transition:.25s;pointer-events:none;z-index:99;box-shadow:0 8px 24px rgba(44,62,69,.25);white-space:nowrap}
-  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+/* PACKING */
+.sub-tab-bar { display: flex; gap: 8px; padding: 14px 16px 0; }
+.sub-tab { padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
+  cursor: pointer; border: 1.5px solid var(--border); background: none;
+  color: var(--ink-muted); font-family: var(--font-sans); transition: all .15s; }
+.sub-tab.active { background: var(--sea); color: #fff; border-color: var(--sea); }
+.filter-chips { display: flex; gap: 8px; padding: 10px 16px;
+  overflow-x: auto; scrollbar-width: none; }
+.filter-chips::-webkit-scrollbar { display: none; }
+.filter-chip { padding: 5px 13px; border-radius: 20px; font-size: 12px; font-weight: 600;
+  cursor: pointer; border: 1.5px solid var(--border); background: none;
+  color: var(--ink-muted); font-family: var(--font-sans); white-space: nowrap; transition: all .15s; }
+.filter-chip.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+.cat-block { margin: 0 16px 8px; }
+.cat-header { display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 0 6px; cursor: pointer; }
+.cat-name { font-size: 12px; font-weight: 700; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--ink-muted); }
+.cat-count { font-size: 12px; color: var(--ink-muted); }
+.cat-items { display: flex; flex-direction: column; gap: 2px; }
+.cat-items.collapsed { display: none; }
+.pack-item { background: var(--surface); border-radius: var(--radius-sm);
+  border: 1px solid var(--border); padding: 10px 12px;
+  display: flex; align-items: center; gap: 10px; }
+.pack-item.packed { opacity: .55; }
+.pack-item.na { opacity: .38; }
+.pack-item-name { flex: 1; font-size: 14px; color: var(--ink); }
+.pack-item-name.packed { text-decoration: line-through; }
+.buy-tag { font-size: 11px; font-weight: 700; color: var(--sand); letter-spacing: .04em;
+  text-transform: uppercase; background: #FAF5EE; border-radius: 4px; padding: 2px 6px; }
+.pack-btns { display: flex; gap: 4px; }
+.pack-btn { padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 700;
+  cursor: pointer; border: 1.5px solid var(--border); background: none;
+  color: var(--ink-muted); font-family: var(--font-sans); transition: all .12s; }
+.pack-btn.sel-pack { background: var(--sea); color: #fff; border-color: var(--sea); }
+.pack-btn.sel-packed { background: #4CAF74; color: #fff; border-color: #4CAF74; }
+.pack-btn.sel-na { background: var(--ink-muted); color: #fff; border-color: var(--ink-muted); }
 
-  /* Empty state */
-  .empty{text-align:center;padding:40px 20px;color:#8AA0A3}
-  .empty svg{margin-bottom:12px;opacity:.4}
-  .empty p{font-weight:600;font-size:14px}
-  .empty small{font-size:12px;margin-top:4px;display:block}
+/* TO DO */
+.todo-list { padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; }
+.todo-item { background: var(--surface); border-radius: var(--radius-sm);
+  border: 1px solid var(--border); padding: 12px 14px;
+  display: flex; align-items: center; gap: 12px; cursor: pointer; }
+.todo-check { width: 20px; height: 20px; border-radius: 50%;
+  border: 2px solid var(--border); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; transition: all .15s; }
+.todo-check.done { background: var(--sea); border-color: var(--sea); }
+.todo-check svg { display: none; width: 11px; height: 11px; }
+.todo-check.done svg { display: block; }
+.todo-text { flex: 1; font-size: 14px; color: var(--ink); }
+.todo-text.done { text-decoration: line-through; color: var(--ink-muted); }
+
+/* ITINERARY */
+.itin-day { margin: 14px 16px 0; }
+.itin-day-label { font-family: var(--font-serif); font-size: 15px;
+  font-weight: 600; color: var(--ink); margin-bottom: 8px; }
+.itin-activity { background: var(--surface); border-radius: var(--radius-sm);
+  border: 1px solid var(--border); padding: 10px 12px;
+  display: flex; gap: 10px; margin-bottom: 6px; align-items: flex-start; }
+.itin-time { font-size: 12px; color: var(--sea); font-weight: 600; min-width: 48px; }
+.itin-body { flex: 1; }
+.itin-title { font-size: 14px; color: var(--ink); }
+.itin-notes { font-size: 12px; color: var(--ink-muted); margin-top: 2px; }
+.itin-check { width: 20px; height: 20px; border-radius: 50%;
+  border: 2px solid var(--border); flex-shrink: 0; background: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; transition: all .15s; }
+.itin-check.done { background: var(--sea); border-color: var(--sea); }
+.itin-check svg { display: none; width: 11px; height: 11px; }
+.itin-check.done svg { display: block; }
+.itin-add-btn { display: flex; align-items: center; gap: 6px; font-size: 13px;
+  color: var(--sea); font-weight: 600; cursor: pointer; background: none; border: none;
+  font-family: var(--font-sans); padding: 8px 0; }
+.itin-add-form { background: var(--surface); border-radius: var(--radius-sm);
+  border: 1px solid var(--border); padding: 12px; margin-top: 4px; display: none; }
+.itin-add-form.open { display: block; }
+
+/* FLIGHTS */
+.flights-wrap { padding: 16px 16px 100px; }
+.api-key-notice { background: #FFF8ED; border: 1px solid #FDECC8;
+  border-radius: var(--radius-sm); padding: 12px 14px;
+  font-size: 13px; color: #856404; margin-bottom: 14px; }
+.api-key-notice strong { display: block; margin-bottom: 6px; }
+.api-key-row { display: flex; gap: 8px; margin-top: 6px; }
+.flight-paste-area { width: 100%; min-height: 80px; resize: vertical;
+  border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+  padding: 10px 12px; font-size: 13px; font-family: var(--font-sans);
+  color: var(--ink); background: var(--surface); outline: none; transition: border-color .15s; }
+.flight-paste-area:focus { border-color: var(--sea); }
+.flight-card { background: var(--surface); border-radius: var(--radius);
+  border: 1px solid var(--border); box-shadow: var(--shadow); overflow: hidden; margin-bottom: 10px; }
+.flight-card-header { display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 14px 10px; border-bottom: 1px solid var(--border); }
+.dir-badge { font-size: 10px; font-weight: 800; letter-spacing: .08em;
+  text-transform: uppercase; padding: 3px 8px; border-radius: 4px; }
+.dir-badge.outbound { background: var(--sea-light); color: var(--sea); }
+.dir-badge.return { background: #F3F0F9; color: #6B4FA8; }
+.flight-route { font-family: var(--font-serif); font-size: 16px;
+  font-weight: 600; color: var(--ink); }
+.flight-card-body { padding: 10px 14px 12px; }
+.flight-airline-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+.flight-airline-txt { font-size: 13px; color: var(--ink-muted); }
+.open-app-btn { font-size: 12px; font-weight: 700; color: var(--sea);
+  background: none; border: none; cursor: pointer; font-family: var(--font-sans); }
+.flight-times { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.flight-time-block { text-align: center; }
+.flight-time { font-size: 18px; font-weight: 700; color: var(--ink); }
+.flight-airport-code { font-size: 12px; color: var(--ink-muted); font-weight: 600; }
+.flight-conf { font-size: 12px; color: var(--ink-muted); }
+.flight-conf span { font-weight: 700; color: var(--ink); }
+.divider-lbl { font-size: 11px; font-weight: 700; color: var(--ink-muted);
+  letter-spacing: .06em; text-transform: uppercase; text-align: center;
+  display: flex; align-items: center; gap: 10px; margin: 20px 0 12px; }
+.divider-lbl::before, .divider-lbl::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.seg-btns { display: flex; gap: 8px; margin-bottom: 14px; }
+.seg-btn { flex: 1; padding: 9px; text-align: center; border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border); cursor: pointer; font-family: var(--font-sans);
+  font-size: 13px; font-weight: 600; color: var(--ink-muted); background: none; transition: all .15s; }
+.seg-btn.active { background: var(--sea); color: #fff; border-color: var(--sea); }
+
+/* SHARED FORM */
+.field-label { font-size: 11px; font-weight: 700; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--ink-muted); margin-bottom: 4px; display: block; }
+input[type=text], input[type=date], input[type=time], input[type=datetime-local],
+select, textarea {
+  width: 100%; padding: 10px 12px; border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border); font-size: 14px; font-family: var(--font-sans);
+  color: var(--ink); background: var(--surface); outline: none;
+  transition: border-color .15s; -webkit-appearance: none; appearance: none; }
+input:focus, select:focus, textarea:focus { border-color: var(--sea); }
+.field { margin-bottom: 12px; }
+.field-row { display: flex; gap: 10px; margin-bottom: 12px; }
+.field-row > .field { flex: 1; margin-bottom: 0; }
+
+/* BUTTONS */
+.btn { padding: 10px 18px; border-radius: var(--radius-sm);
+  font-family: var(--font-sans); font-size: 14px; font-weight: 700;
+  cursor: pointer; border: none; transition: opacity .15s; display: inline-flex;
+  align-items: center; gap: 6px; }
+.btn:active { opacity: .8; }
+.btn-primary { background: var(--sea); color: #fff; }
+.btn-secondary { background: none; color: var(--sea); border: 1.5px solid var(--sea); }
+.btn-ghost { background: none; color: var(--ink-muted); border: 1.5px solid var(--border); }
+.btn-sm { padding: 7px 13px; font-size: 13px; }
+.btn-full { width: 100%; justify-content: center; }
+
+/* FAB */
+.fab { position: fixed; bottom: 84px; right: 20px; z-index: 50;
+  width: 52px; height: 52px; border-radius: 50%; background: var(--sea);
+  color: #fff; border: none; cursor: pointer;
+  box-shadow: 0 4px 16px rgba(63,126,153,.4);
+  display: flex; align-items: center; justify-content: center; }
+.fab svg { width: 24px; height: 24px; }
+.fab.hidden { display: none; }
+
+/* SHEET */
+.sheet-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.3);
+  z-index: 300; display: none; align-items: flex-end; }
+.sheet-overlay.open { display: flex; }
+.sheet { background: var(--surface); border-radius: 20px 20px 0 0;
+  width: 100%; max-height: 90dvh; overflow-y: auto; padding: 20px 16px 40px; }
+.sheet-handle { width: 40px; height: 4px; background: var(--border);
+  border-radius: 2px; margin: 0 auto 20px; }
+.sheet-title { font-family: var(--font-serif); font-size: 18px;
+  font-weight: 600; color: var(--ink); margin-bottom: 16px; }
+.sheet-actions { display: flex; gap: 10px; margin-top: 20px; }
+.sheet-actions > .btn { flex: 1; justify-content: center; }
+
+/* SPINNER */
+.spinner { width: 16px; height: 16px; border: 2.5px solid rgba(255,255,255,.3);
+  border-top-color: #fff; border-radius: 50%; animation: spin .6s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.parse-spinner { border-color: rgba(63,126,153,.3); border-top-color: var(--sea); }
+
+.spacer100 { height: 100px; }
 </style>
 </head>
 <body>
-<div class="app">
 
-  <div class="header">
-    <button class="back" onclick="location.href='index.html'" aria-label="Back">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+<!-- ────────────── LIST VIEW ────────────── -->
+<div id="list-view">
+  <nav class="top-nav">
+    <a href="/" class="nav-back" style="text-decoration:none;">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M12 4L6 10l6 6"/></svg>
+      Home
+    </a>
+    <span class="nav-title">Travel</span>
+    <div style="width:32px;"></div>
+  </nav>
+  <div class="trip-list" id="trip-list-container"></div>
+  <button class="add-trip-btn" onclick="openNewTripSheet()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+  </button>
+</div>
+
+<!-- ────────────── DETAIL VIEW ────────────── -->
+<div id="detail-view">
+  <nav class="top-nav">
+    <button class="nav-back" onclick="showList()">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M12 4L6 10l6 6"/></svg>
+      Trips
     </button>
-    <span class="header-title serif">Travel</span>
-    <button class="add-trip-btn" onclick="openTripSheet()">+ Trip</button>
+    <div style="flex:1;"></div>
+    <button class="icon-btn" onclick="openEditTripSheet()" title="Edit">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14.5 3.5l2 2L7 15H5v-2L14.5 3.5z"/></svg>
+    </button>
+    <button class="icon-btn danger" onclick="deleteCurrentTrip()" title="Delete">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h12M8 6V4h4v2M8 10v5M12 10v5M5 6l1 10h8l1-10"/></svg>
+    </button>
+  </nav>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-eyebrow" id="hero-eyebrow">Trip</div>
+    <input class="hero-name" id="hero-name" type="text" placeholder="Trip name" oninput="saveHeroName()">
+    <div class="hero-chips">
+      <div class="chip" onclick="openDateSheet()">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="3" width="12" height="11" rx="1.5"/><path d="M2 7h12M5 2v2M11 2v2"/></svg>
+        <span id="date-chip-label">Add dates</span>
+      </div>
+      <div class="loc-wrap">
+        <div class="chip" id="loc-chip" onclick="focusLoc()">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="8" cy="6" r="2"/><path d="M8 2C5.79 2 4 3.79 4 6c0 3.25 4 8 4 8s4-4.75 4-8c0-2.21-1.79-4-4-4z"/></svg>
+          <span id="loc-chip-label">Add location</span>
+        </div>
+        <input id="loc-input" type="text" placeholder="City or destination"
+          style="position:absolute;opacity:0;pointer-events:none;top:0;left:0;width:1px;height:1px;border:none;"
+          oninput="onLocInput(event)" onblur="onLocBlur()">
+        <div class="loc-dropdown" id="loc-dropdown"></div>
+      </div>
+    </div>
+    <div class="weather-prose" id="weather-prose" style="display:none;"></div>
   </div>
 
-  <div class="body" id="body">
-    <!-- injected by JS -->
+  <!-- Tab bar -->
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('packing',this)">Packing</button>
+    <button class="tab-btn" onclick="switchTab('todos',this)">To Do</button>
+    <button class="tab-btn" onclick="switchTab('itinerary',this)">Itinerary</button>
+    <button class="tab-btn" id="flights-tab-btn" style="display:none;" onclick="switchTab('flights',this)">Flights</button>
   </div>
 
+  <!-- ═══ PACKING ═══ -->
+  <div class="tab-panel active" id="tab-packing">
+    <div class="sub-tab-bar">
+      <button class="sub-tab active" onclick="switchSubTab('personal',this)">Personal</button>
+      <button class="sub-tab" onclick="switchSubTab('kids',this)">Kids</button>
+    </div>
+    <div class="filter-chips">
+      <button class="filter-chip active" onclick="switchPackFilter('remaining',this)">Still to pack</button>
+      <button class="filter-chip" onclick="switchPackFilter('all',this)">All items</button>
+    </div>
+    <div id="pack-categories"></div>
+    <button class="fab" id="pack-fab" onclick="openAddItemSheet()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+    </button>
+  </div>
+
+  <!-- ═══ TO DO ═══ -->
+  <div class="tab-panel" id="tab-todos">
+    <div class="filter-chips" style="padding-top:14px;">
+      <button class="filter-chip active" onclick="switchTodoFilter('remaining',this)">Still to do</button>
+      <button class="filter-chip" onclick="switchTodoFilter('all',this)">All</button>
+    </div>
+    <div class="todo-list" id="todo-list"></div>
+    <button class="fab hidden" id="todo-fab" onclick="openAddTodoSheet()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+    </button>
+  </div>
+
+  <!-- ═══ ITINERARY ═══ -->
+  <div class="tab-panel" id="tab-itinerary">
+    <div id="itin-days"></div>
+  </div>
+
+  <!-- ═══ FLIGHTS ═══ -->
+  <div class="tab-panel" id="tab-flights">
+    <div class="flights-wrap">
+      <div class="api-key-notice" id="api-key-notice" style="display:none;">
+        <strong>Enable AI flight parsing</strong>
+        Save your Anthropic API key to parse flight confirmation emails automatically.
+        <div class="api-key-row">
+          <input type="text" id="api-key-input" placeholder="sk-ant-..." style="flex:1;">
+          <button class="btn btn-primary btn-sm" onclick="saveApiKey()">Save</button>
+        </div>
+      </div>
+
+      <div id="flight-cards"></div>
+
+      <div class="divider-lbl">Parse from email</div>
+      <textarea class="flight-paste-area" id="flight-paste" placeholder="Paste flight confirmation text here…"></textarea>
+      <div style="display:flex;align-items:center;gap:12px;margin-top:8px;">
+        <button class="btn btn-primary btn-sm" id="parse-btn" onclick="parseFlights()">Parse flights</button>
+        <div id="parse-spinner" style="display:none;align-items:center;gap:8px;font-size:13px;color:var(--ink-muted);">
+          <div class="spinner parse-spinner"></div>Reading confirmation…
+        </div>
+      </div>
+
+      <div class="divider-lbl" style="margin-top:24px;">Add manually</div>
+      <div class="seg-btns" id="dir-btns">
+        <button class="seg-btn active" onclick="setDir('outbound',this)">Outbound</button>
+        <button class="seg-btn" onclick="setDir('return',this)">Return</button>
+      </div>
+      <div class="field-row">
+        <div class="field"><label class="field-label">Airline</label><input type="text" id="m-airline" placeholder="Delta"></div>
+        <div class="field"><label class="field-label">Flight #</label><input type="text" id="m-num" placeholder="DL 402"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label class="field-label">From</label><input type="text" id="m-dep" placeholder="ATL" maxlength="3" style="text-transform:uppercase;"></div>
+        <div class="field"><label class="field-label">To</label><input type="text" id="m-arr" placeholder="LAX" maxlength="3" style="text-transform:uppercase;"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label class="field-label">Departs</label><input type="datetime-local" id="m-dep-t"></div>
+        <div class="field"><label class="field-label">Arrives</label><input type="datetime-local" id="m-arr-t"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label class="field-label">Conf code</label><input type="text" id="m-conf" placeholder="ABC123" style="text-transform:uppercase;"></div>
+        <div class="field"><label class="field-label">Notes</label><input type="text" id="m-notes" placeholder="Optional"></div>
+      </div>
+      <button class="btn btn-primary btn-full" onclick="addManualFlight()">Add Flight</button>
+    </div>
+  </div>
 </div>
 
-<!-- FAB -->
-<button class="fab" id="fab" onclick="openAddItemSheet()" style="display:none">
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-  Add item
-</button>
+<!-- ════════════════════════ SHEETS ════════════════════════ -->
 
-<!-- Trip sheet -->
-<div class="overlay" id="tripSheet">
+<!-- New / Edit Trip -->
+<div class="sheet-overlay" id="sheet-trip">
   <div class="sheet">
     <div class="sheet-handle"></div>
-    <div class="sheet-title" id="tripSheetTitle">New Trip</div>
-    <div class="field-label">Destination</div>
-    <input class="field-input" id="tripDest" placeholder="e.g. Destin, FL">
-    <div class="field-label">Trip name (optional)</div>
-    <input class="field-input" id="tripName" placeholder="e.g. Summer Beach Trip">
-    <div class="field-label">Start date</div>
-    <input class="field-input" type="date" id="tripStart">
-    <div class="field-label">End date</div>
-    <input class="field-input" type="date" id="tripEnd">
-    <div class="field-label">Trip type</div>
-    <div class="type-grid" id="typeGrid">
-      <button class="type-btn" data-type="Beach" onclick="selectType(this)">Beach</button>
-      <button class="type-btn" data-type="Air Travel" onclick="selectType(this)">Air Travel</button>
-      <button class="type-btn" data-type="Road Trip" onclick="selectType(this)">Road Trip</button>
-      <button class="type-btn" data-type="International" onclick="selectType(this)">International</button>
-      <button class="type-btn" data-type="Weekend" onclick="selectType(this)">Weekend</button>
+    <div class="sheet-title" id="sheet-trip-title">New Trip</div>
+    <div class="field"><label class="field-label">Trip name</label><input type="text" id="ts-name" placeholder="e.g. Beach Week"></div>
+    <div class="field"><label class="field-label">Trip type</label>
+      <select id="ts-type">
+        <option>Beach</option><option>Air Travel</option><option>Road Trip</option>
+        <option>City</option><option>Camping</option><option>Other</option>
+      </select>
     </div>
-    <button class="btn-primary" onclick="saveTrip()">Save trip</button>
-    <button class="btn-secondary" id="tripDeleteBtn" onclick="deleteTrip()" style="display:none;color:#C0665C;border-color:#C0665C">Delete trip</button>
-    <button class="btn-secondary" onclick="closeSheet('tripSheet')">Cancel</button>
+    <div class="field-row">
+      <div class="field"><label class="field-label">Start date</label><input type="date" id="ts-start"></div>
+      <div class="field"><label class="field-label">End date</label><input type="date" id="ts-end"></div>
+    </div>
+    <div class="field"><label class="field-label">Destination</label><input type="text" id="ts-dest" placeholder="e.g. Myrtle Beach, SC"></div>
+    <div class="field"><label class="field-label">Notes</label><textarea id="ts-notes" rows="2" placeholder="Optional"></textarea></div>
+    <div class="sheet-actions">
+      <button class="btn btn-ghost" onclick="closeSheet('sheet-trip')">Cancel</button>
+      <button class="btn btn-primary" id="ts-save-btn" onclick="saveTrip()">Create Trip</button>
+    </div>
   </div>
 </div>
 
-<!-- Add item sheet -->
-<div class="overlay" id="addItemSheet">
+<!-- Dates -->
+<div class="sheet-overlay" id="sheet-dates">
   <div class="sheet">
     <div class="sheet-handle"></div>
-    <div class="sheet-title">Add item</div>
-    <div class="field-label">List</div>
-    <div style="display:flex;gap:8px;margin-bottom:14px">
-      <button class="type-btn sel" id="listPersonal" onclick="selectList('Personal')">Personal</button>
-      <button class="type-btn" id="listKids" onclick="selectList('Kids')">Kids</button>
+    <div class="sheet-title">Trip Dates</div>
+    <div class="field-row">
+      <div class="field"><label class="field-label">Start</label><input type="date" id="ds-start"></div>
+      <div class="field"><label class="field-label">End</label><input type="date" id="ds-end"></div>
     </div>
-    <div class="field-label">Item</div>
-    <input class="field-input" id="newItemName" placeholder="e.g. Sunhat">
-    <div class="field-label">Category</div>
-    <div class="cat-chips" id="catChips"></div>
-    <button class="btn-primary" onclick="saveCustomItem()">Add to list</button>
-    <button class="btn-secondary" onclick="closeSheet('addItemSheet')">Cancel</button>
+    <div class="sheet-actions">
+      <button class="btn btn-ghost" onclick="closeSheet('sheet-dates')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveDates()">Save</button>
+    </div>
   </div>
 </div>
 
-<!-- Toast -->
-<div class="toast" id="toast"></div>
+<!-- Add Item -->
+<div class="sheet-overlay" id="sheet-add-item">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">Add Item</div>
+    <div class="field"><label class="field-label">Item name</label><input type="text" id="ai-name" placeholder="e.g. Sunscreen"></div>
+    <div class="field"><label class="field-label">Category</label><input type="text" id="ai-cat" placeholder="e.g. Toiletries"></div>
+    <div class="field" style="display:flex;align-items:center;gap:10px;">
+      <input type="checkbox" id="ai-buy" style="width:auto;">
+      <label for="ai-buy" style="font-size:14px;color:var(--ink);">Need to buy</label>
+    </div>
+    <div class="sheet-actions">
+      <button class="btn btn-ghost" onclick="closeSheet('sheet-add-item')">Cancel</button>
+      <button class="btn btn-primary" onclick="addCustomItem()">Add</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Todo -->
+<div class="sheet-overlay" id="sheet-add-todo">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">Add To Do</div>
+    <div class="field"><label class="field-label">Task</label><input type="text" id="atd-text" placeholder="e.g. Book airport parking"></div>
+    <div class="sheet-actions">
+      <button class="btn btn-ghost" onclick="closeSheet('sheet-add-todo')">Cancel</button>
+      <button class="btn btn-primary" onclick="addTodo()">Add</button>
+    </div>
+  </div>
+</div>
+
+<!-- Flight Preview -->
+<div class="sheet-overlay" id="sheet-flight-preview">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">Parsed Flights</div>
+    <div id="flight-preview-list"></div>
+    <div class="sheet-actions">
+      <button class="btn btn-ghost" onclick="closeSheet('sheet-flight-preview')">Cancel</button>
+      <button class="btn btn-primary" onclick="confirmParsed()">Add all</button>
+    </div>
+  </div>
+</div>
 
 <script>
-// ─── Airtable config (swap to Rachel's own base at launch) ───────────────────
-const AT_BASE    = 'app0Uro891UOlXZm1';
-const AT_TRIPS   = 'tblZGL5OItV8bvztR';
-const AT_PERS    = 'tbled3ngBfaBm2gia';
-const AT_KIDS    = 'tblMTepm5RvcrJnRf';
-const AT_ITEMS   = 'tbl5ax0OCzs4fhfLC';
+// ══════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════
+let currentTripId = null;
+let packList = 'personal';
+let packFilter = 'remaining';
+let todoFilter = 'remaining';
+let activeTab = 'packing';
+let editingTrip = false;
+let flightDir = 'outbound';
+let parsedBuffer = [];
+let wxCache = {};
+let locTimer = null;
 
-// ─── Template data (loaded from Airtable at launch; hardcoded for dev) ────────
-const PERSONAL_ITEMS = [
-  // Clothing
-  {id:'p01',name:'Sundress',category:'Clothing',tripTypes:['Beach','Weekend']},
-  {id:'p02',name:'Swimsuit',category:'Clothing',tripTypes:['Beach']},
-  {id:'p03',name:'Swimsuit coverup',category:'Clothing',tripTypes:['Beach']},
-  {id:'p04',name:'Shorts',category:'Clothing',tripTypes:[]},
-  {id:'p05',name:'T-shirts',category:'Clothing',tripTypes:[]},
-  {id:'p06',name:'Dinner/going-out outfit',category:'Clothing',tripTypes:[]},
-  {id:'p07',name:'Pajamas',category:'Clothing',tripTypes:[]},
-  {id:'p08',name:'Underwear',category:'Clothing',tripTypes:[]},
-  {id:'p09',name:'Bras / bralettes',category:'Clothing',tripTypes:[]},
-  {id:'p10',name:'Lightweight cardigan or wrap',category:'Clothing',tripTypes:[]},
-  {id:'p11',name:'Workout set',category:'Clothing',tripTypes:[]},
-  // Shoes
-  {id:'p12',name:'Sandals',category:'Shoes',tripTypes:[]},
-  {id:'p13',name:'Flip flops',category:'Shoes',tripTypes:['Beach']},
-  {id:'p14',name:'Sneakers',category:'Shoes',tripTypes:[]},
-  {id:'p15',name:'Heels or wedges',category:'Shoes',tripTypes:[]},
-  // Toiletries
-  {id:'p16',name:'Toothbrush + toothpaste',category:'Toiletries',tripTypes:[]},
-  {id:'p17',name:'Deodorant',category:'Toiletries',tripTypes:[]},
-  {id:'p18',name:'Razor + shave gel',category:'Toiletries',tripTypes:[]},
-  {id:'p19',name:'Shampoo + conditioner',category:'Toiletries',tripTypes:[]},
-  {id:'p20',name:'Body wash + loofah',category:'Toiletries',tripTypes:[]},
-  {id:'p21',name:'Feminine products',category:'Toiletries',tripTypes:[]},
-  // Skincare
-  {id:'p22',name:'SPF face sunscreen',category:'Skincare',tripTypes:[]},
-  {id:'p23',name:'SPF moisturizer',category:'Skincare',tripTypes:[]},
-  {id:'p24',name:'Eye cream',category:'Skincare',tripTypes:[]},
-  {id:'p25',name:'Serums',category:'Skincare',tripTypes:[]},
-  {id:'p26',name:'Face wash',category:'Skincare',tripTypes:[]},
-  {id:'p27',name:'Retinol / night treatment',category:'Skincare',tripTypes:[]},
-  {id:'p28',name:'Lip balm SPF',category:'Skincare',tripTypes:[]},
-  {id:'p29',name:'After-sun / aloe',category:'Skincare',tripTypes:['Beach']},
-  // Makeup
-  {id:'p30',name:'Foundation / tinted moisturizer',category:'Makeup',tripTypes:[]},
-  {id:'p31',name:'Mascara',category:'Makeup',tripTypes:[]},
-  {id:'p32',name:'Brow pencil',category:'Makeup',tripTypes:[]},
-  {id:'p33',name:'Lip color',category:'Makeup',tripTypes:[]},
-  {id:'p34',name:'Blush + bronzer',category:'Makeup',tripTypes:[]},
-  {id:'p35',name:'Eyeliner',category:'Makeup',tripTypes:[]},
-  {id:'p36',name:'Makeup remover wipes',category:'Makeup',tripTypes:[]},
-  {id:'p37',name:'Makeup brushes / sponge',category:'Makeup',tripTypes:[]},
-  // Hair
-  {id:'p38',name:'Hairbrush + comb',category:'Hair',tripTypes:[]},
-  {id:'p39',name:'Hair ties + clips',category:'Hair',tripTypes:[]},
-  {id:'p40',name:'Dry shampoo',category:'Hair',tripTypes:[]},
-  {id:'p41',name:'Heat protectant + styling products',category:'Hair',tripTypes:[]},
-  {id:'p42',name:'Curling iron or flat iron',category:'Hair',tripTypes:[]},
-  // Health
-  {id:'p43',name:'Prescriptions',category:'Health',tripTypes:[]},
-  {id:'p44',name:'Vitamins / supplements',category:'Health',tripTypes:[]},
-  {id:'p45',name:'Advil + Tylenol',category:'Health',tripTypes:[]},
-  {id:'p46',name:'Allergy meds',category:'Health',tripTypes:[]},
-  {id:'p47',name:'Melatonin',category:'Health',tripTypes:[]},
-  {id:'p48',name:'Band-aids',category:'Health',tripTypes:[]},
-  // Documents
-  {id:'p49',name:'ID + credit cards + cash',category:'Documents',tripTypes:[]},
-  {id:'p50',name:'Passport',category:'Documents',tripTypes:['International']},
-  {id:'p51',name:'Travel insurance docs',category:'Documents',tripTypes:['Air Travel','International']},
-  {id:'p52',name:'Kids passport / birth certificates',category:'Documents',tripTypes:['International']},
-  // Tech
-  {id:'p53',name:'Phone charger + cable',category:'Tech',tripTypes:[]},
-  {id:'p54',name:'AirPods / headphones',category:'Tech',tripTypes:[]},
-  {id:'p55',name:'Portable charger / power bank',category:'Tech',tripTypes:[]},
-  {id:'p56',name:'Kindle / book',category:'Tech',tripTypes:[]},
-  {id:'p57',name:'Camera + memory card',category:'Tech',tripTypes:[]},
-  // Accessories
-  {id:'p58',name:'Sunglasses',category:'Accessories',tripTypes:[]},
-  {id:'p59',name:'Wide-brim hat',category:'Accessories',tripTypes:['Beach']},
-  {id:'p60',name:'Jewelry',category:'Accessories',tripTypes:[]},
-  {id:'p61',name:'Watch',category:'Accessories',tripTypes:[]},
-  {id:'p62',name:'Tote / beach bag',category:'Accessories',tripTypes:['Beach']},
-  // Beach
-  {id:'p63',name:'SPF 50 body sunscreen',category:'Beach',tripTypes:['Beach']},
-  {id:'p64',name:'Rash guard',category:'Beach',tripTypes:['Beach']},
-  {id:'p65',name:'Beach towels',category:'Beach',tripTypes:['Beach']},
-];
+const S = {
+  get: k => { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } },
+  set: (k,v) => localStorage.setItem(k, JSON.stringify(v)),
+};
+const uid = () => Math.random().toString(36).slice(2,10);
 
-const KIDS_ITEMS = [
-  // Clothing
-  {id:'k01',name:'Shirts (3 per kid)',category:'Clothing',tripTypes:[]},
-  {id:'k02',name:'Shorts (3 per kid)',category:'Clothing',tripTypes:[]},
-  {id:'k03',name:'PJs (per kid)',category:'Clothing',tripTypes:[]},
-  {id:'k04',name:'Underwear + socks',category:'Clothing',tripTypes:[]},
-  {id:'k05',name:'Swimsuits / swim trunks',category:'Clothing',tripTypes:['Beach']},
-  {id:'k06',name:'Rash guards',category:'Clothing',tripTypes:['Beach']},
-  {id:'k07',name:'Nicer outfit (dinner each)',category:'Clothing',tripTypes:[]},
-  // Shoes
-  {id:'k08',name:'Sandals',category:'Shoes',tripTypes:[]},
-  {id:'k09',name:'Sneakers',category:'Shoes',tripTypes:[]},
-  {id:'k10',name:'Water shoes',category:'Shoes',tripTypes:['Beach']},
-  {id:'k11',name:'Crocs',category:'Shoes',tripTypes:[]},
-  // Toiletries
-  {id:'k12',name:'Kids toothbrushes + toothpaste',category:'Toiletries',tripTypes:[]},
-  {id:'k13',name:'Kids shampoo + body wash',category:'Toiletries',tripTypes:[]},
-  {id:'k14',name:'Detangler spray',category:'Toiletries',tripTypes:[]},
-  {id:'k15',name:'Kids hairbrush + comb',category:'Toiletries',tripTypes:[]},
-  // Health
-  {id:'k16',name:'Kids Tylenol + Motrin',category:'Health',tripTypes:[]},
-  {id:'k17',name:"Children's Benadryl",category:'Health',tripTypes:[]},
-  {id:'k18',name:'First aid kit',category:'Health',tripTypes:[]},
-  {id:'k19',name:'Thermometer',category:'Health',tripTypes:[]},
-  {id:'k20',name:'Bug spray (kids)',category:'Health',tripTypes:[]},
-  {id:'k21',name:'Kids prescription meds',category:'Health',tripTypes:[],notes:'if applicable'},
-  // Sleep
-  {id:'k22',name:'Stuffed animals / loveys',category:'Sleep',tripTypes:[]},
-  {id:'k23',name:'Portable white noise machine',category:'Sleep',tripTypes:[]},
-  {id:'k24',name:'Night light',category:'Sleep',tripTypes:[]},
-  {id:'k25',name:'Travel pillow / blanket',category:'Sleep',tripTypes:[]},
-  // Entertainment
-  {id:'k26',name:'iPad / tablet + charger',category:'Entertainment',tripTypes:[]},
-  {id:'k27',name:'Kids headphones',category:'Entertainment',tripTypes:[]},
-  {id:'k28',name:'Books',category:'Entertainment',tripTypes:[]},
-  {id:'k29',name:'Card games / travel games',category:'Entertainment',tripTypes:[]},
-  {id:'k30',name:'Coloring books + crayons',category:'Entertainment',tripTypes:[]},
-  {id:'k31',name:'Small toys / fidgets',category:'Entertainment',tripTypes:[]},
-  // Beach
-  {id:'k32',name:'Kids SPF 50 sunscreen',category:'Beach',tripTypes:['Beach']},
-  {id:'k33',name:'Puddle jumpers / floaties',category:'Beach',tripTypes:['Beach']},
-  {id:'k34',name:'Sand toys (bucket + shovel)',category:'Beach',tripTypes:['Beach']},
-  {id:'k35',name:'Beach tent / shade canopy',category:'Beach',tripTypes:['Beach']},
-  // Snacks
-  {id:'k36',name:'Snack pouches / bars',category:'Snacks',tripTypes:[]},
-  {id:'k37',name:'Fruit pouches',category:'Snacks',tripTypes:[]},
-  {id:'k38',name:'Goldfish + crackers',category:'Snacks',tripTypes:[]},
-  {id:'k39',name:'Juice boxes',category:'Snacks',tripTypes:[]},
-  {id:'k40',name:'Water bottles (each kid)',category:'Snacks',tripTypes:[]},
-  // Gear
-  {id:'k41',name:'Portable booster / travel seat',category:'Gear',tripTypes:[],notes:'for Parker'},
-  {id:'k42',name:'Pack-n-play',category:'Gear',tripTypes:[],notes:'if Parker needs own sleep space'},
-  {id:'k43',name:'Baby monitor',category:'Gear',tripTypes:[]},
-  {id:'k44',name:'Stroller',category:'Gear',tripTypes:[]},
-];
+// Keys
+const kTrips = () => 'rachel.trips';
+const kPack  = id => `rachel.pack.${id}`;
+const kCust  = id => `rachel.custom.${id}`;
+const kTodos = id => `rachel.todos.${id}`;
+const kItin  = id => `rachel.itin.${id}`;
+const kFlts  = id => `rachel.flights.${id}`;
 
-const PERS_CATS = ['Clothing','Shoes','Toiletries','Skincare','Makeup','Hair','Health','Documents','Tech','Accessories','Beach'];
-const KIDS_CATS = ['Clothing','Shoes','Toiletries','Health','Sleep','Entertainment','Beach','Snacks','Gear'];
+const getTrips = () => S.get(kTrips()) || [];
+const saveTrips = a => S.set(kTrips(), a);
+const getTrip = id => getTrips().find(t => t.id === id);
+const getPack = id => S.get(kPack(id)) || initPack(id);
+const getCust = id => S.get(kCust(id)) || [];
+const getTodos = id => S.get(kTodos(id)) || [];
+const getItin = id => S.get(kItin(id)) || [];
+const getFlts = id => S.get(kFlts(id)) || [];
 
-// ─── State ────────────────────────────────────────────────────────────────────
-let trips = JSON.parse(localStorage.getItem('rachel.trips') || '[]');
-let packState = JSON.parse(localStorage.getItem('rachel.packState') || '{}');
-let activeTab = 'Personal'; // 'Personal' | 'Kids'
-let editingTripIdx = -1;
-let selectedTripType = '';
-let addItemList = 'Personal';
-let selectedCatChip = '';
+// ══════════════════════════════════════════════════
+// PACKING TEMPLATES
+// ══════════════════════════════════════════════════
+const PERSONAL = {
+  'Clothing': ['Bathing suit','Cover-up','Casual tops','Shorts/pants','Underwear','Socks','Pajamas','Nice outfit','Sneakers','Sandals','Light jacket'],
+  'Toiletries': ['Shampoo + conditioner','Body wash','Face wash','Moisturizer','Sunscreen','Deodorant','Toothbrush + toothpaste','Razor','Makeup','Hair tools','Perfume','Medications'],
+  'Essentials': ['Phone charger','Headphones','Book/Kindle','Sunglasses','Hat','Water bottle','Cash/cards','ID/passport','Insurance card'],
+  'Bags': ['Luggage','Beach bag','Day bag/backpack']
+};
+const KIDS = {
+  'Clothing': ['Bathing suits (2+)','Rash guard','T-shirts','Shorts','Underwear','Pajamas','Sneakers','Sandals','Hat','Light jacket'],
+  'Toiletries': ['Kids shampoo','Kids body wash','Kids sunscreen SPF 50+','Toothbrush + toothpaste','Medications','First aid kit'],
+  'Beach/Outdoor': ['Floaties/puddle jumper','Sand toys','Beach towels','Goggles','Water shoes'],
+  'Entertainment': ['iPad + charger','Headphones','Stuffed animal','Travel games','Coloring supplies'],
+  'Snacks': ['Snack bars','Juice boxes','Fruit pouches','Water bottles']
+};
 
-function saveTrips(){ localStorage.setItem('rachel.trips', JSON.stringify(trips)); }
-function savePackState(){ localStorage.setItem('rachel.packState', JSON.stringify(packState)); }
-
-function getActiveTrip(){
-  return trips.find(t => t.status === 'Active') || trips[0] || null;
+function initPack(tripId) {
+  const state = { personal: {}, kids: {} };
+  for (const [cat, items] of Object.entries(PERSONAL)) {
+    state.personal[cat] = items.map(name => ({id: uid(), name, buy: false, status: 'pack'}));
+  }
+  for (const [cat, items] of Object.entries(KIDS)) {
+    state.kids[cat] = items.map(name => ({id: uid(), name, buy: false, status: 'pack'}));
+  }
+  S.set(kPack(tripId), state);
+  return state;
 }
 
-function getState(tripKey, itemId){
-  return (packState[tripKey] || {})[itemId] || 'unpacked';
+// ══════════════════════════════════════════════════
+// ROUTING
+// ══════════════════════════════════════════════════
+function showList() {
+  currentTripId = null;
+  document.getElementById('list-view').classList.remove('hidden');
+  document.getElementById('detail-view').classList.remove('active');
+  renderTripList();
 }
 
-function setState(tripKey, itemId, val){
-  if(!packState[tripKey]) packState[tripKey] = {};
-  packState[tripKey][itemId] = val;
-  savePackState();
+function showDetail(id) {
+  currentTripId = id;
+  document.getElementById('list-view').classList.add('hidden');
+  document.getElementById('detail-view').classList.add('active');
+  activeTab = 'packing';
+  packList = 'personal';
+  packFilter = 'remaining';
+  todoFilter = 'remaining';
+  renderDetail();
 }
 
-// ─── Render ───────────────────────────────────────────────────────────────────
-function render(){
-  const body = document.getElementById('body');
-  const trip = getActiveTrip();
-  const tripKey = trip ? (trip.dest + trip.start) : null;
+// ══════════════════════════════════════════════════
+// TRIP LIST
+// ══════════════════════════════════════════════════
+function renderTripList() {
+  const trips = getTrips();
+  const el = document.getElementById('trip-list-container');
+  if (!trips.length) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-state-title">No trips yet</div>Tap + to start planning.</div>`;
+    return;
+  }
+  const now = new Date();
+  const upcoming = trips.filter(t => !t.endDate || new Date(t.endDate+'T23:59:59') >= now);
+  const past = trips.filter(t => t.endDate && new Date(t.endDate+'T23:59:59') < now);
   let html = '';
-
-  // Trip card
-  if(trip){
-    const items = getFilteredItems(trip);
-    const packed = items.filter(i => getState(tripKey, i.id) === 'packed').length;
-    const total  = items.filter(i => getState(tripKey, i.id) !== 'na').length;
-    const pct = total > 0 ? Math.round(packed / total * 100) : 0;
-    html += `
-    <div class="trip-card" onclick="openTripSheet(${trips.indexOf(trip)})">
-      <div class="trip-type-badge">
-        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21 4 19 4 17 4 15 6 14.5 8.5l-8.2 1.8c-.4.1-.7.4-.7.8 0 .3.2.6.5.7L9 13l-3 3h-1l-3 2 2 2 2-3h1l3-3 1.7 3c.1.4.4.6.8.6.3 0 .6-.3.7-.7z"/></svg>
-        ${trip.type || 'Trip'}
-      </div>
-      <div class="trip-name">${trip.name || trip.dest}</div>
-      ${trip.dest && trip.name ? `<div class="trip-dest">${trip.dest}</div>` : ''}
-      ${trip.start ? `<div class="trip-dates">${fmt(trip.start)}${trip.end ? ' – ' + fmt(trip.end) : ''}</div>` : ''}
-      <div class="trip-progress">
-        <div class="progress-bar-track"><div class="progress-bar-fill" style="width:${pct}%"></div></div>
-        <div class="progress-label"><span>${packed} packed</span><span>${total - packed} to go</span></div>
-      </div>
-    </div>`;
-  } else {
-    html += `
-    <div class="trip-card trip-card-empty">
-      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#B2C8CD" stroke-width="1.5" stroke-linecap="round" style="margin-bottom:10px"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21 4 19 4 17 4 15 6 14.5 8.5l-8.2 1.8c-.4.1-.7.4-.7.8 0 .3.2.6.5.7L9 13l-3 3h-1l-3 2 2 2 2-3h1l3-3 1.7 3c.1.4.4.6.8.6.3 0 .6-.3.7-.7z"/></svg>
-      <div style="font-family:'Lora',serif;font-weight:600;font-size:17px;color:#2C3E45;margin-bottom:6px">No active trip</div>
-      <div style="font-size:13px;color:#8AA0A3">Tap <strong>+ Trip</strong> to get started</div>
-    </div>`;
+  if (upcoming.length) {
+    html += '<div class="section-label">Upcoming</div>' + upcoming.map(tripCard).join('');
   }
-
-  if(trip){
-    const items = getFilteredItems(trip);
-    const persItems = items.filter(i => i.list === 'Personal');
-    const kidsItems  = items.filter(i => i.list === 'Kids');
-    const persPacked = persItems.filter(i => getState(tripKey, i.id) === 'packed').length;
-    const kidsPacked = kidsItems.filter(i => getState(tripKey, i.id) === 'packed').length;
-
-    // Tabs
-    html += `
-    <div class="tabs">
-      <button class="tab${activeTab==='Personal'?' active':''}" onclick="switchTab('Personal')">
-        Personal
-        <span class="tab-count">${persPacked}/${persItems.length}</span>
-      </button>
-      <button class="tab${activeTab==='Kids'?' active':''}" onclick="switchTab('Kids')">
-        Kids
-        <span class="tab-count">${kidsPacked}/${kidsItems.length}</span>
-      </button>
-    </div>`;
-
-    // Items for active tab
-    const tabItems = activeTab === 'Personal' ? persItems : kidsItems;
-    const cats = activeTab === 'Personal' ? PERS_CATS : KIDS_CATS;
-    const collapsedKey = 'rachel.collapsed.' + activeTab;
-    const collapsed = JSON.parse(localStorage.getItem(collapsedKey) || '{}');
-
-    cats.forEach(cat => {
-      const catItems = tabItems.filter(i => i.category === cat);
-      if(!catItems.length) return;
-      const packedCount = catItems.filter(i => getState(tripKey, i.id) === 'packed').length;
-      const isCollapsed = collapsed[cat];
-      html += `
-      <div class="cat-section">
-        <div class="cat-header" onclick="toggleCat('${cat}')">
-          <span class="cat-label">${catSvg(cat)} ${cat} <span style="font-weight:500;opacity:.7">${packedCount}/${catItems.length}</span></span>
-          <svg class="cat-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="transform:rotate(${isCollapsed?'-90':'0'}deg)"><path d="M6 9l6 6 6-6"/></svg>
-        </div>
-        ${isCollapsed ? '' : `<div class="cat-body">
-          ${catItems.map(item => {
-            const st = getState(tripKey, item.id);
-            return `<div class="item-row" onclick="cycleItem('${tripKey}','${item.id}')">
-              <div class="ck ${st === 'packed' ? 'packed' : st === 'na' ? 'na' : ''}"></div>
-              <div style="flex:1">
-                <div class="item-text ${st === 'packed' ? 'packed' : ''}">${item.name}</div>
-                ${item.notes ? `<div class="item-notes">${item.notes}</div>` : ''}
-              </div>
-            </div>`;
-          }).join('')}
-          <div class="add-row" onclick="openAddItemSheet('${cat}')">
-            <div class="add-row-plus">
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-            </div>
-            <span>Add to ${cat}</span>
-          </div>
-        </div>`}
-      </div>`;
-    });
-
-    document.getElementById('fab').style.display = 'flex';
-  } else {
-    document.getElementById('fab').style.display = 'none';
+  if (past.length) {
+    html += '<div class="section-label" style="margin-top:20px;">Past</div>' + past.map(tripCard).join('');
   }
-
-  body.innerHTML = html;
+  el.innerHTML = html;
 }
 
-function getFilteredItems(trip){
-  const type = trip.type || '';
-  const pItems = PERSONAL_ITEMS
-    .filter(i => i.tripTypes.length === 0 || i.tripTypes.includes(type))
-    .map(i => ({...i, list:'Personal'}));
-  const kItems = KIDS_ITEMS
-    .filter(i => i.tripTypes.length === 0 || i.tripTypes.includes(type))
-    .map(i => ({...i, list:'Kids'}));
-  // Add any custom items
-  const trip_key = trip.dest + trip.start;
-  const customs = JSON.parse(localStorage.getItem('rachel.custom.' + trip_key) || '[]');
-  return [...pItems, ...kItems, ...customs];
+function tripCard(t) {
+  const dates = t.startDate ? fmtRange(t.startDate, t.endDate) : 'No dates set';
+  return `<div class="trip-card" onclick="showDetail('${t.id}')">
+    <div class="trip-card-eyebrow">${t.type||'Trip'}</div>
+    <div class="trip-card-name">${t.name}</div>
+    <div class="trip-card-meta">${dates}</div>
+    ${t.destination?`<div class="trip-card-dest">${t.destination}</div>`:''}
+  </div>`;
 }
 
-function cycleItem(tripKey, itemId){
-  const cur = getState(tripKey, itemId);
-  const next = cur === 'unpacked' ? 'packed' : cur === 'packed' ? 'na' : 'unpacked';
-  setState(tripKey, itemId, next);
-  render();
+function fmtRange(start, end) {
+  const s = new Date(start+'T12:00:00');
+  if (!end || end===start) return s.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  const e = new Date(end+'T12:00:00');
+  const sy = s.getFullYear()===e.getFullYear();
+  return s.toLocaleDateString('en-US',{month:'short',day:'numeric',year:sy?undefined:'numeric'})
+    +' – '+e.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
 }
 
-function switchTab(tab){
-  activeTab = tab;
-  render();
+// ══════════════════════════════════════════════════
+// TRIP SHEET
+// ══════════════════════════════════════════════════
+function openNewTripSheet() {
+  editingTrip = false;
+  document.getElementById('sheet-trip-title').textContent = 'New Trip';
+  document.getElementById('ts-save-btn').textContent = 'Create Trip';
+  ['ts-name','ts-start','ts-end','ts-dest','ts-notes'].forEach(id => document.getElementById(id).value='');
+  document.getElementById('ts-type').value = 'Beach';
+  openSheet('sheet-trip');
 }
 
-function toggleCat(cat){
-  const key = 'rachel.collapsed.' + activeTab;
-  const c = JSON.parse(localStorage.getItem(key) || '{}');
-  c[cat] = !c[cat];
-  localStorage.setItem(key, JSON.stringify(c));
-  render();
+function openEditTripSheet() {
+  const trip = getTrip(currentTripId); if (!trip) return;
+  editingTrip = true;
+  document.getElementById('sheet-trip-title').textContent = 'Edit Trip';
+  document.getElementById('ts-save-btn').textContent = 'Save';
+  document.getElementById('ts-name').value = trip.name||'';
+  document.getElementById('ts-type').value = trip.type||'Beach';
+  document.getElementById('ts-start').value = trip.startDate||'';
+  document.getElementById('ts-end').value = trip.endDate||'';
+  document.getElementById('ts-dest').value = trip.destination||'';
+  document.getElementById('ts-notes').value = trip.notes||'';
+  openSheet('sheet-trip');
 }
 
-function fmt(d){
-  if(!d) return '';
-  const [y,m,day] = d.split('-');
-  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  return months[+m-1] + ' ' + (+day);
+function saveTrip() {
+  const name = document.getElementById('ts-name').value.trim();
+  if (!name) { document.getElementById('ts-name').focus(); return; }
+  const type = document.getElementById('ts-type').value;
+  const startDate = document.getElementById('ts-start').value;
+  const endDate = document.getElementById('ts-end').value;
+  const destination = document.getElementById('ts-dest').value.trim();
+  const notes = document.getElementById('ts-notes').value.trim();
+
+  if (editingTrip) {
+    const trips = getTrips();
+    const i = trips.findIndex(t=>t.id===currentTripId);
+    if (i!==-1) { trips[i]={...trips[i], name, type, startDate, endDate, destination, notes}; saveTrips(trips); }
+    closeSheet('sheet-trip');
+    renderDetail();
+  } else {
+    const trip = {id:uid(), name, type, startDate, endDate, destination, notes};
+    const trips = getTrips(); trips.unshift(trip); saveTrips(trips);
+    closeSheet('sheet-trip');
+    showDetail(trip.id);
+  }
 }
 
-// ─── Trip sheet ───────────────────────────────────────────────────────────────
-function openTripSheet(idx){
-  editingTripIdx = idx !== undefined ? idx : -1;
-  const trip = editingTripIdx >= 0 ? trips[editingTripIdx] : null;
-  document.getElementById('tripSheetTitle').textContent = trip ? 'Edit Trip' : 'New Trip';
-  document.getElementById('tripDest').value  = trip ? trip.dest  : '';
-  document.getElementById('tripName').value  = trip ? (trip.name || '') : '';
-  document.getElementById('tripStart').value = trip ? (trip.start || '') : '';
-  document.getElementById('tripEnd').value   = trip ? (trip.end   || '') : '';
-  selectedTripType = trip ? (trip.type || '') : '';
-  document.querySelectorAll('.type-btn').forEach(b => {
-    b.classList.toggle('sel', b.dataset.type === selectedTripType);
+function deleteCurrentTrip() {
+  const trip = getTrip(currentTripId);
+  if (!confirm(`Delete "${trip?.name}"? This cannot be undone.`)) return;
+  saveTrips(getTrips().filter(t=>t.id!==currentTripId));
+  showList();
+}
+
+// ══════════════════════════════════════════════════
+// DETAIL
+// ══════════════════════════════════════════════════
+function renderDetail() {
+  const trip = getTrip(currentTripId); if (!trip) { showList(); return; }
+  document.getElementById('hero-eyebrow').textContent = trip.type||'Trip';
+  document.getElementById('hero-name').value = trip.name||'';
+
+  // Date chip
+  document.getElementById('date-chip-label').textContent =
+    trip.startDate ? fmtRange(trip.startDate, trip.endDate) : 'Add dates';
+
+  // Location chip
+  const loc = trip.location || trip.destination || '';
+  document.getElementById('loc-chip-label').textContent = loc || 'Add location';
+  document.getElementById('loc-input').value = loc;
+
+  // Flights tab
+  const ft = document.getElementById('flights-tab-btn');
+  if (trip.type==='Air Travel') ft.style.display='';
+  else { ft.style.display='none'; if (activeTab==='flights') { activeTab='packing'; } }
+
+  // Weather
+  if (loc) loadWeather(loc);
+  else document.getElementById('weather-prose').style.display='none';
+
+  // Activate correct tab
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  const activeBtn = document.querySelector(`.tab-btn[onclick*="'${activeTab}'"]`);
+  if (activeBtn) activeBtn.classList.add('active');
+  const activePanel = document.getElementById('tab-'+activeTab);
+  if (activePanel) activePanel.classList.add('active');
+
+  // FABs
+  document.getElementById('pack-fab').classList.toggle('hidden', activeTab!=='packing');
+  document.getElementById('todo-fab').classList.toggle('hidden', activeTab!=='todos');
+
+  // Restore sub-tab state
+  document.querySelectorAll('.sub-tab').forEach(b=>b.classList.remove('active'));
+  const subBtn = document.querySelector(`.sub-tab[onclick*="'${packList}'"]`);
+  if (subBtn) subBtn.classList.add('active');
+
+  renderPackingTab();
+  renderTodosTab();
+  renderItinTab();
+  renderFlightsTab();
+}
+
+function saveHeroName() {
+  if (!currentTripId) return;
+  const trips = getTrips();
+  const i = trips.findIndex(t=>t.id===currentTripId);
+  if (i!==-1) { trips[i].name = document.getElementById('hero-name').value; saveTrips(trips); }
+}
+
+// ══════════════════════════════════════════════════
+// DATES
+// ══════════════════════════════════════════════════
+function openDateSheet() {
+  const t = getTrip(currentTripId);
+  document.getElementById('ds-start').value = t?.startDate||'';
+  document.getElementById('ds-end').value = t?.endDate||'';
+  openSheet('sheet-dates');
+}
+
+function saveDates() {
+  const start = document.getElementById('ds-start').value;
+  const end = document.getElementById('ds-end').value;
+  const trips = getTrips();
+  const i = trips.findIndex(t=>t.id===currentTripId);
+  if (i!==-1) { trips[i].startDate=start; trips[i].endDate=end; saveTrips(trips); }
+  closeSheet('sheet-dates');
+  document.getElementById('date-chip-label').textContent = start ? fmtRange(start,end) : 'Add dates';
+  renderItinTab();
+}
+
+// ══════════════════════════════════════════════════
+// LOCATION + WEATHER
+// ══════════════════════════════════════════════════
+function focusLoc() {
+  const inp = document.getElementById('loc-input');
+  inp.style.cssText = 'position:fixed;top:0;left:0;width:200px;height:40px;opacity:0;pointer-events:auto;z-index:400;border:none;';
+  inp.focus();
+  document.getElementById('loc-chip').style.borderColor = 'var(--sea)';
+}
+
+function onLocInput(e) {
+  const q = e.target.value;
+  document.getElementById('loc-chip-label').textContent = q || 'Add location';
+  clearTimeout(locTimer);
+  if (q.length < 2) { closeLoc(); return; }
+  locTimer = setTimeout(() => fetchLocs(q), 400);
+}
+
+function onLocBlur() {
+  setTimeout(() => {
+    closeLoc();
+    document.getElementById('loc-chip').style.borderColor = '';
+    const inp = document.getElementById('loc-input');
+    inp.style.cssText = 'position:absolute;opacity:0;pointer-events:none;top:0;left:0;width:1px;height:1px;border:none;';
+  }, 200);
+}
+
+async function fetchLocs(q) {
+  try {
+    const r = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=6&addressdetails=1`,
+      {headers:{'Accept-Language':'en'}});
+    const data = await r.json();
+    const dd = document.getElementById('loc-dropdown');
+    if (!data.length) { closeLoc(); return; }
+    dd.innerHTML = data.map(d => {
+      const label = d.display_name.split(',').slice(0,3).join(', ');
+      return `<div class="loc-option" onmousedown="pickLoc('${label.replace(/'/g,"\\'")}')">${label}</div>`;
+    }).join('');
+    dd.classList.add('open');
+  } catch { closeLoc(); }
+}
+
+function pickLoc(label) {
+  document.getElementById('loc-chip-label').textContent = label;
+  document.getElementById('loc-input').value = label;
+  closeLoc();
+  const trips = getTrips();
+  const i = trips.findIndex(t=>t.id===currentTripId);
+  if (i!==-1) { trips[i].location=label; saveTrips(trips); }
+  loadWeather(label);
+}
+
+function closeLoc() { document.getElementById('loc-dropdown').classList.remove('open'); }
+
+async function loadWeather(loc) {
+  const el = document.getElementById('weather-prose');
+  if (wxCache[loc]) { el.textContent=wxCache[loc]; el.style.display=''; return; }
+  try {
+    const r = await fetch(`https://wttr.in/${encodeURIComponent(loc)}?format=j1`);
+    const d = await r.json();
+    const days = (d.weather||[]).slice(0,7).map(w => ({
+      highF: +w.maxtempF, lowF: +w.mintempF,
+      desc: w.hourly?.[4]?.weatherDesc?.[0]?.value||''
+    }));
+    const summary = buildWxSummary(days, loc);
+    wxCache[loc] = summary;
+    el.textContent = summary; el.style.display='';
+  } catch { el.style.display='none'; }
+}
+
+function buildWxSummary(days, loc) {
+  if (!days.length) return '';
+  const maxH = Math.max(...days.map(d=>d.highF));
+  const minL = Math.min(...days.map(d=>d.lowF));
+  const sunny = days.filter(d=>d.desc.match(/sunny|clear|partly/i)).length;
+  let s = `Expect highs around ${Math.round(maxH)}°F and lows near ${Math.round(minL)}°F`;
+  if (sunny >= days.length/2) s += ', with mostly sunny skies';
+  s += ` during your trip to ${loc.split(',')[0]}.`;
+  return s;
+}
+
+// ══════════════════════════════════════════════════
+// TABS
+// ══════════════════════════════════════════════════
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+  activeTab = name;
+  document.getElementById('pack-fab').classList.toggle('hidden', name!=='packing');
+  document.getElementById('todo-fab').classList.toggle('hidden', name!=='todos');
+}
+
+// ══════════════════════════════════════════════════
+// PACKING
+// ══════════════════════════════════════════════════
+function switchSubTab(list, btn) {
+  packList = list;
+  document.querySelectorAll('.sub-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderPackingTab();
+}
+
+function switchPackFilter(f, btn) {
+  packFilter = f;
+  document.querySelectorAll('#tab-packing .filter-chip').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderPackingTab();
+}
+
+function renderPackingTab() {
+  if (!currentTripId) return;
+  const pack = getPack(currentTripId);
+  const cust = getCust(currentTripId);
+  const listData = pack[packList] || {};
+
+  // Merge custom into categories
+  const cats = {};
+  for (const [cat, items] of Object.entries(listData)) cats[cat] = [...items];
+  cust.filter(c=>c.list===packList).forEach(c=>{
+    if (!cats[c.category]) cats[c.category]=[];
+    cats[c.category].push(c);
   });
-  document.getElementById('tripDeleteBtn').style.display = trip ? 'block' : 'none';
-  openSheet('tripSheet');
-}
 
-function selectType(btn){
-  selectedTripType = btn.dataset.type === selectedTripType ? '' : btn.dataset.type;
-  document.querySelectorAll('.type-btn').forEach(b => b.classList.toggle('sel', b.dataset.type === selectedTripType));
-}
-
-function saveTrip(){
-  const dest  = document.getElementById('tripDest').value.trim();
-  const name  = document.getElementById('tripName').value.trim();
-  const start = document.getElementById('tripStart').value;
-  const end   = document.getElementById('tripEnd').value;
-  if(!dest){ showToast('Add a destination'); return; }
-  const trip = {dest, name, start, end, type:selectedTripType, status:'Active'};
-  if(editingTripIdx >= 0){
-    trips[editingTripIdx] = {...trips[editingTripIdx], ...trip};
-  } else {
-    trips.push(trip);
+  let html = '';
+  for (const [cat, items] of Object.entries(cats)) {
+    const visible = packFilter==='remaining' ? items.filter(i=>i.status!=='packed'&&i.status!=='na') : items;
+    if (!visible.length) continue;
+    const remaining = items.filter(i=>i.status!=='packed'&&i.status!=='na').length;
+    html += `<div class="cat-block">
+      <div class="cat-header" onclick="this.nextElementSibling.classList.toggle('collapsed')">
+        <span class="cat-name">${cat}</span>
+        <span class="cat-count">${remaining}/${items.length}</span>
+      </div>
+      <div class="cat-items">${visible.map(packItemHtml).join('')}</div>
+    </div>`;
   }
-  saveTrips();
-  closeSheet('tripSheet');
-  render();
+  document.getElementById('pack-categories').innerHTML = html ||
+    '<div style="padding:24px 16px;color:var(--ink-muted);font-size:14px;text-align:center;">All packed!</div>';
 }
 
-function deleteTrip(){
-  if(editingTripIdx < 0) return;
-  trips.splice(editingTripIdx, 1);
-  saveTrips();
-  closeSheet('tripSheet');
-  render();
+function packItemHtml(item) {
+  const isPacked = item.status==='packed';
+  const isNA = item.status==='na';
+  return `<div class="pack-item${isPacked?' packed':''}${isNA?' na':''}">
+    <span class="pack-item-name${isPacked?' packed':''}">${item.name}</span>
+    ${item.buy?'<span class="buy-tag">Buy</span>':''}
+    <div class="pack-btns">
+      <button class="pack-btn${item.status==='pack'?' sel-pack':''}" onclick="setPackStatus('${item.id}','pack')">Pack</button>
+      <button class="pack-btn${isPacked?' sel-packed':''}" onclick="setPackStatus('${item.id}','packed')">Packed</button>
+      <button class="pack-btn${isNA?' sel-na':''}" onclick="setPackStatus('${item.id}','na')">N/A</button>
+    </div>
+  </div>`;
 }
 
-// ─── Add item sheet ───────────────────────────────────────────────────────────
-function openAddItemSheet(presetCat){
-  addItemList = activeTab;
-  selectedCatChip = presetCat || '';
-  document.getElementById('newItemName').value = '';
-  document.getElementById('listPersonal').classList.toggle('sel', addItemList === 'Personal');
-  document.getElementById('listKids').classList.toggle('sel', addItemList === 'Kids');
-  renderCatChips();
-  openSheet('addItemSheet');
+function setPackStatus(itemId, status) {
+  const pack = getPack(currentTripId);
+  for (const listKey of ['personal','kids']) {
+    for (const items of Object.values(pack[listKey]||{})) {
+      const item = items.find(i=>i.id===itemId);
+      if (item) { item.status=status; S.set(kPack(currentTripId),pack); renderPackingTab(); return; }
+    }
+  }
+  const cust = getCust(currentTripId);
+  const c = cust.find(i=>i.id===itemId);
+  if (c) { c.status=status; S.set(kCust(currentTripId),cust); renderPackingTab(); }
 }
 
-function selectList(list){
-  addItemList = list;
-  document.getElementById('listPersonal').classList.toggle('sel', list === 'Personal');
-  document.getElementById('listKids').classList.toggle('sel', list === 'Kids');
-  renderCatChips();
+function openAddItemSheet() {
+  document.getElementById('ai-name').value='';
+  document.getElementById('ai-cat').value='';
+  document.getElementById('ai-buy').checked=false;
+  openSheet('sheet-add-item');
 }
 
-function renderCatChips(){
-  const cats = addItemList === 'Personal' ? PERS_CATS : KIDS_CATS;
-  document.getElementById('catChips').innerHTML = cats.map(c =>
-    `<button class="cat-chip${c === selectedCatChip ? ' sel' : ''}" onclick="selectCatChip('${c}')">${c}</button>`
-  ).join('');
+function addCustomItem() {
+  const name = document.getElementById('ai-name').value.trim(); if (!name) return;
+  const category = document.getElementById('ai-cat').value.trim()||'Other';
+  const buy = document.getElementById('ai-buy').checked;
+  const cust = getCust(currentTripId);
+  cust.push({id:uid(), name, category, buy, status:'pack', list:packList});
+  S.set(kCust(currentTripId), cust);
+  closeSheet('sheet-add-item');
+  renderPackingTab();
 }
 
-function selectCatChip(cat){
-  selectedCatChip = cat === selectedCatChip ? '' : cat;
-  renderCatChips();
+// ══════════════════════════════════════════════════
+// TODOS
+// ══════════════════════════════════════════════════
+function switchTodoFilter(f, btn) {
+  todoFilter = f;
+  document.querySelectorAll('#tab-todos .filter-chip').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTodosTab();
 }
 
-function saveCustomItem(){
-  const name = document.getElementById('newItemName').value.trim();
-  if(!name){ showToast('Enter an item name'); return; }
-  const trip = getActiveTrip();
-  if(!trip) return;
-  const tripKey = trip.dest + trip.start;
-  const storeKey = 'rachel.custom.' + tripKey;
-  const customs = JSON.parse(localStorage.getItem(storeKey) || '[]');
-  const id = 'c' + Date.now();
-  customs.push({id, name, category: selectedCatChip || 'Other', list: addItemList, tripTypes: [], notes: '', custom: true});
-  localStorage.setItem(storeKey, JSON.stringify(customs));
-  closeSheet('addItemSheet');
-  render();
-  showToast('Added to ' + addItemList);
+function renderTodosTab() {
+  if (!currentTripId) return;
+  const todos = getTodos(currentTripId);
+  const visible = todoFilter==='remaining' ? todos.filter(t=>!t.done) : todos;
+  const el = document.getElementById('todo-list');
+  if (!visible.length) {
+    el.innerHTML = `<div style="color:var(--ink-muted);font-size:14px;text-align:center;padding:30px 0;">${todoFilter==='remaining'?'All done!':'No todos yet.'}</div>`;
+    return;
+  }
+  el.innerHTML = visible.map(t=>`
+    <div class="todo-item" onclick="toggleTodo('${t.id}')">
+      <div class="todo-check${t.done?' done':''}">
+        <svg viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2.5"><path d="M2 6l3 3 5-5"/></svg>
+      </div>
+      <span class="todo-text${t.done?' done':''}">${t.text}</span>
+      <button class="icon-btn" onclick="event.stopPropagation();deleteTodo('${t.id}')">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 4h10M6 4V2.5h4V4M6 7v5M10 7v5M4 4l.8 8h6.4L12 4"/></svg>
+      </button>
+    </div>`).join('');
 }
 
-// ─── Sheet helpers ────────────────────────────────────────────────────────────
-function openSheet(id){
-  document.getElementById(id).classList.add('show');
-  document.body.style.overflow = 'hidden';
+function toggleTodo(id) {
+  const todos = getTodos(currentTripId);
+  const t = todos.find(x=>x.id===id);
+  if (t) { t.done=!t.done; S.set(kTodos(currentTripId),todos); renderTodosTab(); }
 }
 
-function closeSheet(id){
-  document.getElementById(id).classList.remove('show');
-  document.body.style.overflow = '';
+function deleteTodo(id) {
+  S.set(kTodos(currentTripId), getTodos(currentTripId).filter(t=>t.id!==id));
+  renderTodosTab();
 }
 
-document.querySelectorAll('.overlay').forEach(el => {
-  el.addEventListener('click', e => { if(e.target === el) closeSheet(el.id); });
+function openAddTodoSheet() {
+  document.getElementById('atd-text').value='';
+  openSheet('sheet-add-todo');
+}
+
+function addTodo() {
+  const text = document.getElementById('atd-text').value.trim(); if (!text) return;
+  const todos = getTodos(currentTripId);
+  todos.push({id:uid(), text, done:false});
+  S.set(kTodos(currentTripId), todos);
+  closeSheet('sheet-add-todo');
+  renderTodosTab();
+}
+
+// ══════════════════════════════════════════════════
+// ITINERARY
+// ══════════════════════════════════════════════════
+function tripDays(start, end) {
+  if (!start) return [];
+  const days = [];
+  const s = new Date(start+'T12:00:00');
+  const e = end ? new Date(end+'T12:00:00') : s;
+  for (let d=new Date(s); d<=e; d.setDate(d.getDate()+1)) days.push(new Date(d));
+  return days;
+}
+
+function renderItinTab() {
+  if (!currentTripId) return;
+  const trip = getTrip(currentTripId);
+  const days = tripDays(trip?.startDate, trip?.endDate);
+  const acts = getItin(currentTripId);
+  const el = document.getElementById('itin-days');
+  if (!days.length) {
+    el.innerHTML='<div style="padding:30px 16px;color:var(--ink-muted);font-size:14px;text-align:center;">Add trip dates to plan each day.</div>';
+    return;
+  }
+  el.innerHTML = days.map(day=>{
+    const dk = day.toISOString().slice(0,10);
+    const dayActs = acts.filter(a=>a.date===dk).sort((a,b)=>(a.time||'').localeCompare(b.time||''));
+    const label = day.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+    return `<div class="itin-day">
+      <div class="itin-day-label">${label}</div>
+      ${dayActs.map(a=>itinActHtml(a)).join('')}
+      <button class="itin-add-btn" onclick="toggleItinForm('${dk}')">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><path d="M8 3v10M3 8h10"/></svg>
+        Add activity
+      </button>
+      <div class="itin-add-form" id="itin-form-${dk}">
+        <div class="field-row" style="margin-bottom:8px;">
+          <div class="field" style="flex:1;"><input type="time" id="itin-t-${dk}"></div>
+          <div class="field" style="flex:2;"><input type="text" id="itin-title-${dk}" placeholder="Activity"></div>
+        </div>
+        <div class="field" style="margin-bottom:10px;"><input type="text" id="itin-notes-${dk}" placeholder="Notes (optional)"></div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-ghost btn-sm" onclick="toggleItinForm('${dk}')">Cancel</button>
+          <button class="btn btn-primary btn-sm" onclick="addItinAct('${dk}')">Add</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('') + '<div class="spacer100"></div>';
+}
+
+function itinActHtml(a) {
+  return `<div class="itin-activity">
+    <div class="itin-time">${a.time?fmt12(a.time):''}</div>
+    <div class="itin-body">
+      <div class="itin-title" style="${a.done?'text-decoration:line-through;color:var(--ink-muted);':''}">${a.title}</div>
+      ${a.notes?`<div class="itin-notes">${a.notes}</div>`:''}
+    </div>
+    <button class="itin-check${a.done?' done':''}" onclick="toggleItinDone('${a.id}')">
+      <svg viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2.5"><path d="M2 6l3 3 5-5"/></svg>
+    </button>
+    <button class="icon-btn" onclick="deleteItinAct('${a.id}')">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 4h10M6 4V2.5h4V4M6 7v5M10 7v5M4 4l.8 8h6.4L12 4"/></svg>
+    </button>
+  </div>`;
+}
+
+function fmt12(t) {
+  const [h,m] = t.split(':').map(Number);
+  return `${h%12||12}:${String(m).padStart(2,'0')} ${h>=12?'PM':'AM'}`;
+}
+
+function toggleItinForm(dk) {
+  const f = document.getElementById(`itin-form-${dk}`);
+  f.classList.toggle('open');
+  if (f.classList.contains('open')) document.getElementById(`itin-title-${dk}`)?.focus();
+}
+
+function addItinAct(dk) {
+  const title = document.getElementById(`itin-title-${dk}`)?.value.trim(); if (!title) return;
+  const time = document.getElementById(`itin-t-${dk}`)?.value||'';
+  const notes = document.getElementById(`itin-notes-${dk}`)?.value.trim()||'';
+  const acts = getItin(currentTripId);
+  acts.push({id:uid(), date:dk, time, title, notes, done:false});
+  S.set(kItin(currentTripId), acts);
+  renderItinTab();
+}
+
+function toggleItinDone(id) {
+  const acts = getItin(currentTripId);
+  const a = acts.find(x=>x.id===id);
+  if (a) { a.done=!a.done; S.set(kItin(currentTripId),acts); renderItinTab(); }
+}
+
+function deleteItinAct(id) {
+  S.set(kItin(currentTripId), getItin(currentTripId).filter(a=>a.id!==id));
+  renderItinTab();
+}
+
+// ══════════════════════════════════════════════════
+// FLIGHTS
+// ══════════════════════════════════════════════════
+const AIRLINE_LINKS = {
+  american:  'https://www.aa.com/travelInformation/flights/status',
+  delta:     'https://www.delta.com/us/en/flight-search/flight-status',
+  united:    'https://www.united.com/ual/en/us/flight-search/flight-status',
+  southwest: 'https://www.southwest.com/air/flight-status/',
+  jetblue:   'https://www.jetblue.com/manage-trips/',
+  alaska:    'https://www.alaskaair.com/flight-status',
+  frontier:  'https://www.flyfrontier.com/travel-info/flight-status/',
+  spirit:    'https://www.spirit.com/AvailablitySearch/Trips'
+};
+
+function renderFlightsTab() {
+  if (!currentTripId) return;
+  const apiKey = localStorage.getItem('rachel.anthropicKey');
+  document.getElementById('api-key-notice').style.display = apiKey ? 'none' : '';
+  const flights = getFlts(currentTripId);
+  const outbound = flights.filter(f=>f.direction==='outbound');
+  const ret = flights.filter(f=>f.direction==='return');
+  let html = '';
+  if (outbound.length) html += '<div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:8px;">Outbound</div>' + outbound.map(flightCardHtml).join('');
+  if (ret.length) html += '<div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-muted);margin:12px 0 8px;">Return</div>' + ret.map(flightCardHtml).join('');
+  document.getElementById('flight-cards').innerHTML = html;
+}
+
+function flightCardHtml(f) {
+  const ak = (f.airline||'').toLowerCase().replace(/\s+/g,'');
+  const appKey = Object.keys(AIRLINE_LINKS).find(k=>ak.includes(k));
+  return `<div class="flight-card">
+    <div class="flight-card-header">
+      <span class="dir-badge ${f.direction}">${f.direction==='outbound'?'Outbound':'Return'}</span>
+      <span class="flight-route">${f.depAirport||'?'} → ${f.arrAirport||'?'}</span>
+      <button class="icon-btn danger" onclick="deleteFlight('${f.id}')">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 4h10M6 4V2.5h4V4M6 7v5M10 7v5M4 4l.8 8h6.4L12 4"/></svg>
+      </button>
+    </div>
+    <div class="flight-card-body">
+      <div class="flight-airline-row">
+        <span class="flight-airline-txt">${f.airline||''}${f.flightNum?' · '+f.flightNum:''}</span>
+        ${appKey?`<button class="open-app-btn" onclick="window.open('${AIRLINE_LINKS[appKey]}','_blank')">Open App</button>`:''}
+      </div>
+      <div class="flight-times">
+        <div class="flight-time-block">
+          <div class="flight-time">${fmtTime(f.depTime)}</div>
+          <div class="flight-airport-code">${f.depAirport||''}</div>
+        </div>
+        <div style="color:var(--border);font-size:18px;">→</div>
+        <div class="flight-time-block">
+          <div class="flight-time">${fmtTime(f.arrTime)}</div>
+          <div class="flight-airport-code">${f.arrAirport||''}</div>
+        </div>
+      </div>
+      ${f.confCode?`<div class="flight-conf">Conf: <span>${f.confCode}</span></div>`:''}
+      ${f.notes?`<div class="flight-conf" style="margin-top:2px;">${f.notes}</div>`:''}
+    </div>
+  </div>`;
+}
+
+function fmtTime(iso) {
+  if (!iso) return '--';
+  try { return new Date(iso).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true}); }
+  catch { return iso; }
+}
+
+function deleteFlight(id) {
+  S.set(kFlts(currentTripId), getFlts(currentTripId).filter(f=>f.id!==id));
+  renderFlightsTab();
+}
+
+function saveApiKey() {
+  const key = document.getElementById('api-key-input').value.trim();
+  if (!key.startsWith('sk-')) { alert('That doesn\'t look like an Anthropic API key.'); return; }
+  localStorage.setItem('rachel.anthropicKey', key);
+  renderFlightsTab();
+}
+
+function setDir(dir, btn) {
+  flightDir = dir;
+  document.querySelectorAll('#dir-btns .seg-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function addManualFlight() {
+  const dep = document.getElementById('m-dep').value.trim().toUpperCase();
+  const arr = document.getElementById('m-arr').value.trim().toUpperCase();
+  if (!dep||!arr) { alert('Please enter departure and arrival airports.'); return; }
+  const depT = document.getElementById('m-dep-t').value;
+  const arrT = document.getElementById('m-arr-t').value;
+  const flights = getFlts(currentTripId);
+  flights.push({
+    id: uid(), direction: flightDir,
+    airline: document.getElementById('m-airline').value.trim(),
+    flightNum: document.getElementById('m-num').value.trim(),
+    depAirport: dep, arrAirport: arr,
+    depTime: depT ? new Date(depT).toISOString() : '',
+    arrTime: arrT ? new Date(arrT).toISOString() : '',
+    confCode: document.getElementById('m-conf').value.trim().toUpperCase(),
+    notes: document.getElementById('m-notes').value.trim()
+  });
+  S.set(kFlts(currentTripId), flights);
+  ['m-airline','m-num','m-dep','m-arr','m-dep-t','m-arr-t','m-conf','m-notes'].forEach(id=>document.getElementById(id).value='');
+  renderFlightsTab();
+}
+
+async function parseFlights() {
+  const text = document.getElementById('flight-paste').value.trim(); if (!text) return;
+  const apiKey = localStorage.getItem('rachel.anthropicKey');
+  if (!apiKey) {
+    document.getElementById('api-key-notice').style.display='';
+    document.getElementById('api-key-input').focus(); return;
+  }
+  document.getElementById('parse-btn').style.display='none';
+  document.getElementById('parse-spinner').style.display='flex';
+  try {
+    const r = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true',
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 1024,
+        messages: [{role:'user', content:
+`Extract all flights from this text. Return ONLY a JSON array. Each item: direction ("outbound" or "return", first=outbound), airline, flightNum, depAirport (IATA), arrAirport (IATA), depTime (ISO local datetime), arrTime (ISO local datetime), confCode, notes.
+
+${text}`}]
+      })
+    });
+    const d = await r.json();
+    const txt = d.content?.[0]?.text||'';
+    const m = txt.match(/\[[\s\S]*\]/);
+    if (!m) throw new Error('No JSON array found');
+    parsedBuffer = JSON.parse(m[0]);
+    showParsedPreview(parsedBuffer);
+  } catch(e) {
+    alert('Could not parse flights. Try adding manually.\n\n'+e.message);
+  } finally {
+    document.getElementById('parse-btn').style.display='';
+    document.getElementById('parse-spinner').style.display='none';
+  }
+}
+
+function showParsedPreview(flights) {
+  document.getElementById('flight-preview-list').innerHTML = flights.map(f=>`
+    <div style="margin-bottom:10px;padding:12px;background:var(--sea-light);border-radius:var(--radius-sm);">
+      <div style="font-size:11px;font-weight:700;color:var(--sea);text-transform:uppercase;margin-bottom:4px;">${f.direction}</div>
+      <div style="font-weight:600;font-size:15px;">${f.depAirport||'?'} → ${f.arrAirport||'?'}</div>
+      <div style="font-size:13px;color:var(--ink-muted);">${f.airline||''} ${f.flightNum||''} · ${f.confCode||''}</div>
+      <div style="font-size:13px;color:var(--ink-muted);">${f.depTime?new Date(f.depTime).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit',hour12:true}):''}</div>
+    </div>`).join('');
+  openSheet('sheet-flight-preview');
+}
+
+function confirmParsed() {
+  const flights = getFlts(currentTripId);
+  parsedBuffer.forEach(f => flights.push({
+    id:uid(), direction:f.direction||'outbound',
+    airline:f.airline, flightNum:f.flightNum,
+    depAirport:f.depAirport, arrAirport:f.arrAirport,
+    depTime:f.depTime, arrTime:f.arrTime,
+    confCode:f.confCode, notes:f.notes
+  }));
+  S.set(kFlts(currentTripId), flights);
+  document.getElementById('flight-paste').value='';
+  closeSheet('sheet-flight-preview');
+  renderFlightsTab();
+}
+
+// ══════════════════════════════════════════════════
+// SHEET HELPERS
+// ══════════════════════════════════════════════════
+function openSheet(id) { document.getElementById(id).classList.add('open'); document.body.style.overflow='hidden'; }
+function closeSheet(id) { document.getElementById(id).classList.remove('open'); document.body.style.overflow=''; }
+
+document.querySelectorAll('.sheet-overlay').forEach(el=>{
+  el.addEventListener('click', e=>{ if(e.target===el) closeSheet(el.id); });
 });
 
-function showToast(msg){
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2000);
-}
+// Enter key on sheets
+document.getElementById('ts-name').addEventListener('keydown', e=>{ if(e.key==='Enter') saveTrip(); });
+document.getElementById('ai-name').addEventListener('keydown', e=>{ if(e.key==='Enter') addCustomItem(); });
+document.getElementById('atd-text').addEventListener('keydown', e=>{ if(e.key==='Enter') addTodo(); });
+document.getElementById('api-key-input').addEventListener('keydown', e=>{ if(e.key==='Enter') saveApiKey(); });
 
-// ─── Category icons ───────────────────────────────────────────────────────────
-function catSvg(cat){
-  const icons = {
-    Clothing:`<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 7 17 4l-5 2-5-2L4 7l4 2v11h8V9z"/></svg>`,
-    Shoes:`<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 18h17a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1h-3L12 7H3v11z"/></svg>`,
-    Toiletries:`<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2v6m0 0a5 5 0 1 0 0 10 5 5 0 0 0 0-10z"/></svg>`,
-    Skincare:`<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22C6.5 22 2 17.5 2 12S6.5 2 12 2s10 4.5 10 10-4.5 10-10 10z"/><path d="M8 12s.5 3 4 3 4-3 4-3"/><path d="M9 9h.01M15 9h.01"/></svg>`,
-    Makeup:`<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>`,
-    Hair:`<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2c-3.31 0-6 2.69-6 6 0 3.87 3.07 8.18 6 12 2.93-3.82 6-8.13 6-12 0-3.31-2.69-6-6-6z"/><circle cx="12" cy="8" r="2"/></svg>`,
-    Health:`<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>`,
-    Documents:`<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>`,
-    Tech:`<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>`,
-    Accessories:`<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="8"/><path d="M12 4v2M12 18v2M4 12h2M18 12h2"/></svg>`,
-    Beach:`<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 20h18"/><path d="M6 20c0-6.63 5.37-12 12-12"/><path d="M17 4c0 3.31-2.69 6-6 6S5 7.31 5 4"/><path d="M9.5 4.5 17 4"/></svg>`,
-    Sleep:`<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 17h18M5 17V9a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v8M3 21h18"/></svg>`,
-    Entertainment:`<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="15" rx="2"/><path d="M16 3 12 7 8 3"/></svg>`,
-    Snacks:`<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>`,
-    Gear:`<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>`,
-    Other:`<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>`,
-  };
-  return icons[cat] || icons.Other;
-}
-
-render();
+// ══════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════
+renderTripList();
 </script>
 </body>
 </html>

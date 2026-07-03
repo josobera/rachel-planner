@@ -220,6 +220,10 @@ input:focus, select:focus { border-color: var(--sea); }
         <input type="text" id="ai-cat" placeholder="e.g. Dairy">
       </div>
     </div>
+    <div class="field">
+      <label class="field-label">Instacart link <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--ink-muted);font-size:11px;">(optional — paste product URL)</span></label>
+      <input type="text" id="ai-url" placeholder="https://www.instacart.com/products/...">
+    </div>
     <div class="sheet-actions">
       <button class="btn btn-ghost" onclick="closeSheet()">Cancel</button>
       <button class="btn btn-primary" onclick="addItem()">Add</button>
@@ -331,7 +335,7 @@ function renderList() {
 function itemHtml(item, store) {
   const s = STORES[store];
   const searchQ = encodeURIComponent(item.name);
-  const instacartUrl = `https://www.instacart.com/store/s?k=${searchQ}`;
+  const instacartUrl = item.url || `https://www.instacart.com/store/s?k=${searchQ}`;
   return `<div class="g-item${item.checked?' checked':''}">
     <button class="g-check${item.checked?' done':''}" onclick="toggleItem('${item.id}')">
       <svg viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2.5"><path d="M2 6l3 3 5-5"/></svg>
@@ -381,6 +385,7 @@ function openAddSheet() {
   document.getElementById('ai-name').value = '';
   document.getElementById('ai-qty').value = '';
   document.getElementById('ai-cat').value = '';
+  document.getElementById('ai-url').value = '';
   document.getElementById('sheet-add').classList.add('open');
   document.body.style.overflow = 'hidden';
   setTimeout(() => document.getElementById('ai-name').focus(), 100);
@@ -396,8 +401,9 @@ function addItem() {
   if (!name) return;
   const qty = document.getElementById('ai-qty').value.trim();
   const category = document.getElementById('ai-cat').value.trim() || 'Other';
+  const url = document.getElementById('ai-url').value.trim();
   const items = getList(addStore);
-  items.push({ id: uid(), name, qty, category, checked: false });
+  items.push({ id: uid(), name, qty, category, url, checked: false });
   S.set(kList(addStore), items);
   // Switch to the store we just added to
   if (addStore !== currentStore) {

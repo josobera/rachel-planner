@@ -42,7 +42,7 @@ body { font-family: var(--font-sans); background: var(--bg); color: var(--ink);
   transition: all .15s; display: flex; flex-direction: column;
   align-items: center; gap: 3px; }
 .store-tab.active.publix { color: #5A8B72; border-bottom-color: #5A8B72; }
-.store-tab.active.costco { color: #E31837; border-bottom-color: #E31837; }
+.store-tab.active.costco { color: #2E6B7A; border-bottom-color: #2E6B7A; }
 .store-tab-logo { font-size: 11px; font-weight: 800; letter-spacing: .04em; }
 
 /* FILTER CHIPS */
@@ -89,7 +89,7 @@ body { font-family: var(--font-sans); background: var(--bg); color: var(--ink);
 }
 .instacart-btn:active { opacity: .75; }
 .instacart-btn.publix { background: #5A8B72; color: #fff; }
-.instacart-btn.costco { background: #E31837; color: #fff; }
+.instacart-btn.costco { background: #2E6B7A; color: #fff; }
 .icon-btn { background: none; border: none; cursor: pointer;
   color: var(--ink-muted); padding: 4px; display: flex; align-items: center; }
 .icon-btn svg { width: 15px; height: 15px; }
@@ -157,7 +157,7 @@ input:focus, select:focus { border-color: var(--sea); }
   border: 1.5px solid var(--border); cursor: pointer; font-family: var(--font-sans);
   font-size: 13px; font-weight: 700; color: var(--ink-muted); background: none; transition: all .15s; }
 .store-pill.active.publix { background: #5A8B72; color: #fff; border-color: #5A8B72; }
-.store-pill.active.costco { background: #E31837; color: #fff; border-color: #E31837; }
+.store-pill.active.costco { background: #2E6B7A; color: #fff; border-color: #2E6B7A; }
 </style>
 </head>
 <body>
@@ -178,7 +178,7 @@ input:focus, select:focus { border-color: var(--sea); }
     <span style="font-size:11px;">via Instacart</span>
   </button>
   <button class="store-tab costco" onclick="switchStore('costco',this)">
-    <span class="store-tab-logo" style="color:#E31837;">COSTCO</span>
+    <span class="store-tab-logo" style="color:#2E6B7A;">COSTCO</span>
     <span style="font-size:11px;">via Instacart</span>
   </button>
 </div>
@@ -241,7 +241,7 @@ const STORES = {
   },
   costco: {
     name: 'Costco',
-    color: '#E31837',
+    color: '#2E6B7A',
     instacartSlug: 'costco-warehouse',
     defaultCats: ['Produce','Dairy & Eggs','Meat & Seafood','Bakery & Deli','Pantry & Dry Goods','Frozen','Beverages','Snacks','Household','Health & Beauty','Paper Goods']
   }

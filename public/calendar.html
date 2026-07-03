@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F5F2EA">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>Family Calendar · My Day</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,400;1,500;1,600&family=Mulish:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Mulish',-apple-system,'Segoe UI',sans-serif;background:#F5F2EA;color:#2C3E45;-webkit-font-smoothing:antialiased}
+  .app{max-width:440px;margin:0 auto;min-height:100vh;background:#F5F2EA}
+  .serif{font-family:'Lora',serif}
+  .header{background:linear-gradient(180deg,#F6F3EA 0%,#E6EFF0 100%);padding:calc(20px + env(safe-area-inset-top,0)) 20px 20px;position:relative;overflow:hidden}
+  .wave{position:absolute;bottom:-6px;left:-20px;opacity:.4;pointer-events:none}
+  .back{display:flex;align-items:center;gap:6px;font-weight:600;font-size:13px;color:#3F7E99;background:none;border:none;cursor:pointer;font-family:inherit;padding:0;margin-bottom:14px;position:relative}
+  .page-title{font-family:'Lora',serif;font-weight:600;font-size:24px;color:#2C3E45;position:relative}
+  .page-sub{font-size:12px;color:#5A7681;margin-top:3px;position:relative}
+  .body{padding:16px 18px 40px;display:flex;flex-direction:column;gap:6px}
+  .day-label{font-weight:700;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#5A8B72;margin-top:14px;margin-bottom:4px}
+  .day-label:first-child{margin-top:4px}
+  .event{background:#fff;border:1px solid #E6E2D6;border-radius:14px;padding:12px 14px;box-shadow:0 1px 4px rgba(44,62,69,.05);display:flex;align-items:flex-start;gap:12px}
+  .event-dot{width:8px;height:8px;border-radius:50%;flex:none;margin-top:5px}
+  .event-time{font-weight:700;font-size:11px;color:#7FA0A8;white-space:nowrap;min-width:38px;margin-top:2px}
+  .event-name{font-weight:600;font-size:14px;color:#2C3E45;line-height:1.3}
+  .event-loc{font-size:11px;color:#8AA0A3;margin-top:3px}
+  .allday{font-weight:600;font-size:10px;color:#3F7E99;background:#E3EFF1;border-radius:5px;padding:2px 6px;white-space:nowrap;margin-top:2px}
+  .loading{text-align:center;padding:48px 24px;color:#8AA0A3;font-size:14px}
+  .error{background:#FEF2F2;border:1px solid #FECACA;border-radius:14px;padding:14px 16px;font-size:13px;color:#991B1B;margin:16px 0}
+  .empty{text-align:center;padding:32px 0;color:#8AA0A3;font-size:14px}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="wave">
+      <svg width="460" height="150" viewBox="0 0 460 150" fill="none" stroke="#4E89A6" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
+        <path d="M-20 70Q40 48 100 70T220 70T340 70T460 70" opacity=".5"/>
+        <path d="M-20 96Q40 74 100 96T220 96T340 96T460 96" opacity=".4"/>
+        <path d="M-20 122Q40 100 100 122T220 122T340 122T460 122" opacity=".3"/>
+      </svg>
+    </div>
+    <button class="back" onclick="location.href='/'">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      My Day
+    </button>
+    <div class="page-title">Family Calendar</div>
+    <div class="page-sub">Next 30 days</div>
+  </div>
+  <div class="body" id="body">
+    <div class="loading">Loading your calendar…</div>
+  </div>
+</div>
+
+<script>
+const RAW_URLS = [
+  'https://p58-caldav.icloud.com/published/2/MTc5MjQxODIwMTc5MjQxODwAAW3ZHUhov4D1qVg32ftrpSHBx-jFXUoth4Qv1M__'
+];
+// iCloud blocks direct cross-origin fetches — route through corsproxy.io
+const CAL_URLS = RAW_URLS.map(u => 'https://corsproxy.io/?' + encodeURIComponent(u));
+
+const DOT_COLORS = ['#3F7E99','#B2925F','#5A8B72','#D99B6C','#8B6BA0'];
+
+function parseICS(text) {
+  const events = [];
+  const blocks = text.split('BEGIN:VEVENT');
+  for (let i = 1; i < blocks.length; i++) {
+    const b = blocks[i];
+    const get = (key) => {
+      const m = b.match(new RegExp(key + '(?:;[^:]*)?:([^\\r\\n]+)'));
+      return m ? m[1].trim() : '';
+    };
+    const dtstart = get('DTSTART');
+    const dtend   = get('DTEND');
+    const summary = get('SUMMARY').replace(/\\,/g,',').replace(/\\n/g,' ');
+    const location= get('LOCATION').replace(/\\,/g,',');
+    const allDay  = !dtstart.includes('T');
+
+    let start = parseICSDate(dtstart);
+    let end   = parseICSDate(dtend);
+    if (!start || !summary) continue;
+    events.push({ start, end, summary, location, allDay });
+  }
+  return events;
+}
+
+function parseICSDate(s) {
+  if (!s) return null;
+  if (s.includes('T')) {
+    // e.g. 20260703T140000Z or 20260703T140000
+    const y=s.slice(0,4),mo=s.slice(4,6),d=s.slice(6,8);
+    const h=s.slice(9,11),mi=s.slice(11,13);
+    const utc = s.endsWith('Z');
+    if (utc) return new Date(Date.UTC(+y,+mo-1,+d,+h,+mi));
+    return new Date(+y,+mo-1,+d,+h,+mi);
+  } else {
+    const y=s.slice(0,4),mo=s.slice(4,6),d=s.slice(6,8);
+    return new Date(+y,+mo-1,+d);
+  }
+}
+
+function fmtTime(date, allDay) {
+  if (allDay) return '';
+  return date.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true}).replace(' ','').toLowerCase();
+}
+
+function fmtDayLabel(date) {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const d = new Date(date); d.setHours(0,0,0,0);
+  const diff = Math.round((d-today)/(1000*86400));
+  if (diff === 0) return 'Today';
+  if (diff === 1) return 'Tomorrow';
+  return d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+}
+
+async function load() {
+  const body = document.getElementById('body');
+  try {
+    const allEvents = [];
+    for (let i = 0; i < CAL_URLS.length; i++) {
+      const res = await fetch(CAL_URLS[i]);
+      if (!res.ok) throw new Error('Could not load calendar');
+      const text = await res.text();
+      const evts = parseICS(text);
+      evts.forEach(e => { e.color = DOT_COLORS[i % DOT_COLORS.length]; });
+      allEvents.push(...evts);
+    }
+
+    const now = new Date();
+    const cutoff = new Date(now); cutoff.setDate(cutoff.getDate() + 30);
+
+    const upcoming = allEvents
+      .filter(e => e.start >= now && e.start <= cutoff)
+      .sort((a,b) => a.start - b.start);
+
+    if (!upcoming.length) {
+      body.innerHTML = '<div class="empty">No upcoming events in the next 30 days.</div>';
+      return;
+    }
+
+    let html = '';
+    let lastDay = '';
+    for (const e of upcoming) {
+      const dayKey = e.start.toDateString();
+      if (dayKey !== lastDay) {
+        html += `<div class="day-label">${fmtDayLabel(e.start)}</div>`;
+        lastDay = dayKey;
+      }
+      html += `
+        <div class="event">
+          <span class="event-dot" style="background:${e.color}"></span>
+          <div style="flex:1;min-width:0">
+            <div class="event-name">${e.summary}</div>
+            ${e.location ? `<div class="event-loc">${e.location}</div>` : ''}
+          </div>
+          ${e.allDay
+            ? '<span class="allday">All day</span>'
+            : `<div class="event-time">${fmtTime(e.start,false)}</div>`}
+        </div>`;
+    }
+    body.innerHTML = html;
+  } catch(err) {
+    body.innerHTML = `<div class="error">Couldn't load calendar — ${err.message}. Make sure the calendar is shared publicly in iCloud settings.</div>`;
+  }
+}
+
+load();
+</script>
+</body>
+</html>

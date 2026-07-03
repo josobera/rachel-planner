@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#F5F2EA">
-<title>Kids · My Day</title>
+<title>Kids · Rachel's Planner</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,14 +15,14 @@
   .app{max-width:440px;margin:0 auto;min-height:100vh;background:#F5F2EA;overflow-x:hidden}
   .serif{font-family:'Lora',serif}
   .top{position:sticky;top:0;z-index:10;background:rgba(245,242,234,.92);backdrop-filter:blur(8px);display:flex;align-items:center;gap:12px;padding:calc(20px + env(safe-area-inset-top,0)) 18px 13px;border-bottom:1px solid #E6E2D6}
-  .back{width:36px;height:36px;border-radius:50%;background:#fff;border:1px solid #E6E2D6;display:flex;align-items:center;justify-content:center;color:#5A8B72;cursor:pointer;text-decoration:none;font-size:22px;line-height:1;padding-bottom:3px}
+  .back{width:36px;height:36px;border-radius:50%;background:#fff;border:1px solid #E6E2D6;display:flex;align-items:center;justify-content:center;color:#3F7E99;cursor:pointer;text-decoration:none;font-size:22px;line-height:1;padding-bottom:3px}
   .body{padding:16px 18px 100px;display:flex;flex-direction:column;gap:14px}
   .card{background:#fff;border:1px solid #E6E2D6;border-radius:18px;padding:16px;box-shadow:0 1px 6px rgba(44,62,69,.06)}
-  .lbl{font-weight:700;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:#5A8B72}
+  .lbl{font-weight:700;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:#3F7E99}
   .kidsel{display:flex;gap:14px;flex-wrap:wrap;padding:9px 6px 3px}
   .kidchip{flex:none;display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;background:none;border:none;font-family:inherit}
   .kidchip .av{width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Lora',serif;font-weight:600;font-size:23px;color:#fff;transition:.15s}
-  .kidchip.active .av{box-shadow:0 0 0 3px #F5F2EA,0 0 0 6px #5A8B72}
+  .kidchip.active .av{box-shadow:0 0 0 3px #F5F2EA,0 0 0 6px #3F7E99}
   .kidchip span{font-weight:600;font-size:12px;color:#8AA0A3}
   .kidchip.active span{color:#2C3E45}
   .sizes{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:13px}
@@ -32,8 +32,8 @@
   .size .v{font-family:'Lora',serif;font-weight:600;font-size:24px;color:#2C3E45;margin-top:1px}
   .row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #F0EEE5}
   .row:last-child{border-bottom:none}
-  .row-action{font-size:11px;font-weight:600;color:#5A8B72;cursor:pointer;flex:none}
-  .fab{position:fixed;bottom:calc(24px + env(safe-area-inset-bottom,0));right:24px;width:54px;height:54px;border-radius:50%;background:#5A8B72;color:#fff;border:none;font-size:26px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(63,126,153,.35);z-index:20}
+  .row-action{font-size:11px;font-weight:600;color:#3F7E99;cursor:pointer;flex:none}
+  .fab{position:fixed;bottom:calc(24px + env(safe-area-inset-bottom,0));right:24px;width:54px;height:54px;border-radius:50%;background:#3F7E99;color:#fff;border:none;font-size:26px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(63,126,153,.35);z-index:20}
   /* Sheet */
   .sheet-overlay{position:fixed;inset:0;background:rgba(44,62,69,.35);z-index:50;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .2s}
   .sheet-overlay.open{opacity:1;pointer-events:all}
@@ -42,16 +42,16 @@
   .sheet-handle{width:36px;height:4px;background:#E6E2D6;border-radius:2px;margin:12px auto 16px}
   .sheet-title{font-family:'Lora',serif;font-weight:600;font-size:20px;margin-bottom:18px;color:#2C3E45}
   .field{display:flex;flex-direction:column;gap:5px;margin-bottom:13px}
-  .field-label{font-weight:700;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:#5A8B72}
+  .field-label{font-weight:700;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:#3F7E99}
   .field input,.field textarea{border:1.5px solid #E6E2D6;border-radius:10px;padding:10px 12px;font-family:inherit;font-size:14px;color:#2C3E45;background:#fff;outline:none;width:100%}
-  .field input:focus,.field textarea:focus{border-color:#5A8B72}
+  .field input:focus,.field textarea:focus{border-color:#3F7E99}
   .field textarea{resize:none;height:72px}
   .field-row{display:flex;gap:10px;margin-bottom:13px}
   .field-row .field{flex:1;margin-bottom:0}
   .sheet-actions{display:flex;gap:10px;margin-top:6px}
   .btn{flex:1;padding:13px;border-radius:12px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;border:none;transition:.15s}
   .btn-ghost{background:#F0EDE5;color:#2C3E45}
-  .btn-primary{background:#5A8B72;color:#fff}
+  .btn-primary{background:#3F7E99;color:#fff}
   .btn-danger{background:#E8B4B4;color:#8B2020}
   .color-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:13px}
   .color-dot{width:32px;height:32px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:.1s}
@@ -67,7 +67,7 @@
   <div class="top">
     <a class="back" href="/" aria-label="Back to home">&lsaquo;</a>
     <span class="serif" style="font-weight:600;font-size:22px">Kids</span>
-    <button onclick="openAddKid()" style="margin-left:auto;background:none;border:none;font-family:inherit;font-size:13px;font-weight:700;color:#5A8B72;cursor:pointer">+ Add kid</button>
+    <button onclick="openAddKid()" style="margin-left:auto;background:none;border:none;font-family:inherit;font-size:13px;font-weight:700;color:#3F7E99;cursor:pointer">+ Add kid</button>
   </div>
   <div class="body">
     <div class="kidsel" id="kidsel"></div>
@@ -118,7 +118,7 @@
 </div>
 
 <script>
-const COLORS = ['#5A8B72','#5FA39B','#B2925F','#7E6B8F','#4A8C6F','#C4784A','#8B5E83','#4A7C8C'];
+const COLORS = ['#3F7E99','#5FA39B','#B2925F','#7E6B8F','#4A8C6F','#C4784A','#8B5E83','#4A7C8C'];
 const S = {
   get: k => { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } },
   set: (k,v) => localStorage.setItem(k, JSON.stringify(v))
@@ -128,7 +128,7 @@ const KEY = 'rachel.kids';
 
 function getKids() {
   return S.get(KEY) || [
-    {id:'k1', name:'Jackson', age:8, color:'#5A8B72', school:'3rd grade · Liberty Park Elementary',
+    {id:'k1', name:'Jackson', age:8, color:'#3F7E99', school:'3rd grade · Liberty Park Elementary',
      sizes:{Shirt:'8', Pants:'8', Shoe:'2.5Y', Jacket:'8'},
      activities:[{id:'a1',name:'Soccer',when:'Tue & Thu · 4:30'},{id:'a2',name:'Swim team',when:'Sat · 9:00'}],
      notes:'Loves dinosaurs and Legos. Into chapter books right now.'},
@@ -179,7 +179,7 @@ function renderDetail() {
           <div class="serif" style="font-weight:600;font-size:24px">${k.name}<span style="font-size:15px;color:#8AA0A3;font-weight:500"> · age ${k.age}</span></div>
           <div style="font-weight:500;font-size:13px;color:#5A7681;margin-top:4px">${k.school||''}</div>
         </div>
-        <button onclick="openEditKid('${k.id}')" style="background:none;border:none;font-size:11px;font-weight:700;color:#5A8B72;cursor:pointer;margin-top:4px">Edit</button>
+        <button onclick="openEditKid('${k.id}')" style="background:none;border:none;font-size:11px;font-weight:700;color:#3F7E99;cursor:pointer;margin-top:4px">Edit</button>
       </div>
     </div>
 
@@ -197,7 +197,7 @@ function renderDetail() {
     <div class="card">
       <div style="display:flex;align-items:center;margin-bottom:8px">
         <span class="lbl">Activities</span>
-        <button onclick="openAddActivity('${k.id}')" style="margin-left:auto;background:none;border:none;font-size:11px;font-weight:700;color:#5A8B72;cursor:pointer">+ Add</button>
+        <button onclick="openAddActivity('${k.id}')" style="margin-left:auto;background:none;border:none;font-size:11px;font-weight:700;color:#3F7E99;cursor:pointer">+ Add</button>
       </div>
       ${(k.activities||[]).length ? (k.activities||[]).map(a => `
         <div class="row">
@@ -211,7 +211,7 @@ function renderDetail() {
     <div class="card">
       <div style="display:flex;align-items:center;margin-bottom:8px">
         <span class="lbl">Notes & Gift ideas</span>
-        <button onclick="openEditKid('${k.id}')" style="margin-left:auto;background:none;border:none;font-size:11px;font-weight:700;color:#5A8B72;cursor:pointer">Edit</button>
+        <button onclick="openEditKid('${k.id}')" style="margin-left:auto;background:none;border:none;font-size:11px;font-weight:700;color:#3F7E99;cursor:pointer">Edit</button>
       </div>
       <div class="serif" style="font-style:italic;font-size:15px;line-height:1.5;color:#2C3E45">${k.notes||'<span style="color:#8AA0A3">No notes yet.</span>'}</div>
     </div>`;

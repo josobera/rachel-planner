@@ -1,5 +1,5 @@
-const CACHE = 'rachel-v2';
-const SHELL = ['/', '/index.html', '/tasks.html', '/kids.html', '/travel.html', '/manifest.webmanifest', '/icon.svg'];
+const CACHE = 'rachel-v3';
+const SHELL = ['/', '/index.html', '/tasks.html', '/kids.html', '/travel.html', '/grocery.html', '/manifest.webmanifest', '/icon.svg'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));

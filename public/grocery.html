@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Grocery — Rachel's Planner</title>
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600&family=Mulish:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F5F2EA; --surface: #FFFFFF; --border: #E6E2D6;
+  --ink: #2C3E45; --ink-muted: #6B7C84;
+  --sea: #3F7E99; --sea-light: #EBF3F7;
+  --sand: #D99B6C; --sand-light: #FBF4EC;
+  --green: #4CAF74; --green-light: #EDF7F2;
+  --font-serif: 'Lora', Georgia, serif;
+  --font-sans: 'Mulish', system-ui, sans-serif;
+  --radius: 12px; --radius-sm: 8px;
+  --shadow: 0 1px 4px rgba(44,62,69,.08), 0 2px 12px rgba(44,62,69,.06);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); background: var(--bg); color: var(--ink);
+  min-height: 100dvh; -webkit-tap-highlight-color: transparent; }
+
+/* NAV */
+.top-nav { position: sticky; top: 0; z-index: 100; background: var(--surface);
+  border-bottom: 1px solid var(--border); display: flex; align-items: center;
+  padding: 0 16px; height: 56px; gap: 12px; }
+.nav-back { background: none; border: none; cursor: pointer; display: flex;
+  align-items: center; gap: 6px; color: var(--sea); font-family: var(--font-sans);
+  font-size: 15px; font-weight: 500; padding: 8px 0; text-decoration: none; }
+.nav-title { font-family: var(--font-serif); font-size: 18px; color: var(--ink);
+  flex: 1; text-align: center; }
+
+/* STORE TABS */
+.store-tabs { display: flex; background: var(--surface);
+  border-bottom: 1px solid var(--border); }
+.store-tab { flex: 1; padding: 14px 8px; background: none; border: none;
+  cursor: pointer; font-family: var(--font-sans); font-size: 14px; font-weight: 700;
+  color: var(--ink-muted); border-bottom: 3px solid transparent;
+  transition: all .15s; display: flex; flex-direction: column;
+  align-items: center; gap: 3px; }
+.store-tab.active.publix { color: #006B3F; border-bottom-color: #006B3F; }
+.store-tab.active.costco { color: #E31837; border-bottom-color: #E31837; }
+.store-tab-logo { font-size: 11px; font-weight: 800; letter-spacing: .04em; }
+
+/* FILTER CHIPS */
+.filter-bar { display: flex; gap: 8px; padding: 12px 16px;
+  overflow-x: auto; scrollbar-width: none; }
+.filter-bar::-webkit-scrollbar { display: none; }
+.filter-chip { padding: 5px 13px; border-radius: 20px; font-size: 12px;
+  font-weight: 600; cursor: pointer; border: 1.5px solid var(--border);
+  background: none; color: var(--ink-muted); font-family: var(--font-sans);
+  white-space: nowrap; transition: all .15s; }
+.filter-chip.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+/* CATEGORY BLOCKS */
+.cat-block { margin: 0 16px 8px; }
+.cat-header { display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 0 6px; cursor: pointer; }
+.cat-name { font-size: 11px; font-weight: 800; letter-spacing: .07em;
+  text-transform: uppercase; color: var(--ink-muted); }
+.cat-count { font-size: 12px; color: var(--ink-muted); }
+.cat-items { display: flex; flex-direction: column; gap: 3px; }
+.cat-items.collapsed { display: none; }
+
+/* GROCERY ITEM */
+.g-item { background: var(--surface); border-radius: var(--radius-sm);
+  border: 1px solid var(--border); padding: 10px 12px;
+  display: flex; align-items: center; gap: 10px; }
+.g-item.checked { opacity: .5; }
+.g-check { width: 22px; height: 22px; border-radius: 50%;
+  border: 2px solid var(--border); flex-shrink: 0; cursor: pointer;
+  background: none; display: flex; align-items: center; justify-content: center;
+  transition: all .15s; }
+.g-check.done { background: var(--green); border-color: var(--green); }
+.g-check svg { display: none; width: 11px; height: 11px; }
+.g-check.done svg { display: block; }
+.g-name { flex: 1; font-size: 14px; color: var(--ink); }
+.g-name.done { text-decoration: line-through; color: var(--ink-muted); }
+.g-qty { font-size: 12px; color: var(--ink-muted); font-weight: 600; min-width: 20px; text-align: right; }
+.g-actions { display: flex; gap: 6px; align-items: center; }
+.instacart-btn {
+  display: flex; align-items: center; gap: 4px;
+  padding: 4px 9px; border-radius: 6px; font-size: 11px; font-weight: 700;
+  cursor: pointer; border: none; font-family: var(--font-sans);
+  white-space: nowrap; transition: opacity .15s;
+}
+.instacart-btn:active { opacity: .75; }
+.instacart-btn.publix { background: #006B3F; color: #fff; }
+.instacart-btn.costco { background: #E31837; color: #fff; }
+.icon-btn { background: none; border: none; cursor: pointer;
+  color: var(--ink-muted); padding: 4px; display: flex; align-items: center; }
+.icon-btn svg { width: 15px; height: 15px; }
+
+/* EMPTY */
+.empty-state { text-align: center; padding: 48px 24px;
+  color: var(--ink-muted); font-size: 14px; line-height: 1.6; }
+.empty-title { font-family: var(--font-serif); font-size: 18px;
+  color: var(--ink); margin-bottom: 6px; }
+
+/* DONE BANNER */
+.done-banner { margin: 12px 16px 0; background: var(--green-light);
+  border: 1px solid #B8E8CC; border-radius: var(--radius-sm);
+  padding: 10px 14px; display: flex; align-items: center;
+  justify-content: space-between; }
+.done-banner-txt { font-size: 13px; color: #2E7D52; font-weight: 600; }
+.clear-btn { font-size: 12px; font-weight: 700; color: #2E7D52;
+  background: none; border: none; cursor: pointer; font-family: var(--font-sans); }
+
+/* FAB */
+.fab { position: fixed; bottom: 84px; right: 20px; z-index: 50;
+  width: 52px; height: 52px; border-radius: 50%; background: var(--sand);
+  color: #fff; border: none; cursor: pointer;
+  box-shadow: 0 4px 16px rgba(217,155,108,.4);
+  display: flex; align-items: center; justify-content: center; }
+.fab svg { width: 24px; height: 24px; }
+
+/* SHEETS */
+.sheet-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.3);
+  z-index: 300; display: none; align-items: flex-end; }
+.sheet-overlay.open { display: flex; }
+.sheet { background: var(--surface); border-radius: 20px 20px 0 0;
+  width: 100%; max-height: 85dvh; overflow-y: auto; padding: 20px 16px 40px; }
+.sheet-handle { width: 40px; height: 4px; background: var(--border);
+  border-radius: 2px; margin: 0 auto 20px; }
+.sheet-title { font-family: var(--font-serif); font-size: 18px;
+  font-weight: 600; color: var(--ink); margin-bottom: 16px; }
+.field { margin-bottom: 12px; }
+.field-label { font-size: 11px; font-weight: 700; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--ink-muted); margin-bottom: 4px; display: block; }
+.field-row { display: flex; gap: 10px; margin-bottom: 12px; }
+.field-row > .field { flex: 1; margin-bottom: 0; }
+input[type=text], input[type=number], select {
+  width: 100%; padding: 10px 12px; border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border); font-size: 14px; font-family: var(--font-sans);
+  color: var(--ink); background: var(--surface); outline: none;
+  transition: border-color .15s; -webkit-appearance: none; appearance: none; }
+input:focus, select:focus { border-color: var(--sea); }
+.sheet-actions { display: flex; gap: 10px; margin-top: 20px; }
+.sheet-actions > .btn { flex: 1; justify-content: center; }
+.btn { padding: 10px 18px; border-radius: var(--radius-sm);
+  font-family: var(--font-sans); font-size: 14px; font-weight: 700;
+  cursor: pointer; border: none; display: flex; align-items: center;
+  gap: 6px; transition: opacity .15s; }
+.btn:active { opacity: .8; }
+.btn-primary { background: var(--sea); color: #fff; }
+.btn-ghost { background: none; color: var(--ink-muted); border: 1.5px solid var(--border); }
+.btn-full { width: 100%; justify-content: center; }
+
+.spacer { height: 100px; }
+
+/* Store selector in add sheet */
+.store-pill-row { display: flex; gap: 8px; margin-bottom: 14px; }
+.store-pill { flex: 1; padding: 9px; text-align: center; border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border); cursor: pointer; font-family: var(--font-sans);
+  font-size: 13px; font-weight: 700; color: var(--ink-muted); background: none; transition: all .15s; }
+.store-pill.active.publix { background: #006B3F; color: #fff; border-color: #006B3F; }
+.store-pill.active.costco { background: #E31837; color: #fff; border-color: #E31837; }
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <a href="/" class="nav-back">
+    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M12 4L6 10l6 6"/></svg>
+    Home
+  </a>
+  <span class="nav-title">Grocery</span>
+  <div style="width:60px;"></div>
+</nav>
+
+<!-- Store tabs -->
+<div class="store-tabs">
+  <button class="store-tab publix active" onclick="switchStore('publix',this)">
+    <span class="store-tab-logo" style="color:#006B3F;">PUBLIX</span>
+    <span style="font-size:11px;">via Instacart</span>
+  </button>
+  <button class="store-tab costco" onclick="switchStore('costco',this)">
+    <span class="store-tab-logo" style="color:#E31837;">COSTCO</span>
+    <span style="font-size:11px;">via Instacart</span>
+  </button>
+</div>
+
+<div id="filter-bar-wrap">
+  <div class="filter-bar">
+    <button class="filter-chip active" onclick="switchFilter('remaining',this)">Still to get</button>
+    <button class="filter-chip" onclick="switchFilter('all',this)">All items</button>
+  </div>
+</div>
+
+<div id="list-container"></div>
+<div class="spacer"></div>
+
+<button class="fab" onclick="openAddSheet()">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+</button>
+
+<!-- Add item sheet -->
+<div class="sheet-overlay" id="sheet-add">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">Add Item</div>
+    <div class="store-pill-row">
+      <button class="store-pill publix active" id="pill-publix" onclick="setAddStore('publix')">Publix</button>
+      <button class="store-pill costco" id="pill-costco" onclick="setAddStore('costco')">Costco</button>
+    </div>
+    <div class="field">
+      <label class="field-label">Item</label>
+      <input type="text" id="ai-name" placeholder="e.g. Whole milk">
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label class="field-label">Qty</label>
+        <input type="text" id="ai-qty" placeholder="e.g. 2" style="width:100%;">
+      </div>
+      <div class="field" style="flex:2;">
+        <label class="field-label">Category</label>
+        <input type="text" id="ai-cat" placeholder="e.g. Dairy">
+      </div>
+    </div>
+    <div class="sheet-actions">
+      <button class="btn btn-ghost" onclick="closeSheet()">Cancel</button>
+      <button class="btn btn-primary" onclick="addItem()">Add</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const STORES = {
+  publix: {
+    name: 'Publix',
+    color: '#006B3F',
+    instacartSlug: 'publix',
+    defaultCats: ['Produce','Dairy & Eggs','Meat & Seafood','Bakery','Pantry','Frozen','Beverages','Snacks','Household','Personal Care']
+  },
+  costco: {
+    name: 'Costco',
+    color: '#E31837',
+    instacartSlug: 'costco-warehouse',
+    defaultCats: ['Produce','Dairy & Eggs','Meat & Seafood','Bakery & Deli','Pantry & Dry Goods','Frozen','Beverages','Snacks','Household','Health & Beauty','Paper Goods']
+  }
+};
+
+let currentStore = 'publix';
+let currentFilter = 'remaining';
+let addStore = 'publix';
+
+const S = {
+  get: k => { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } },
+  set: (k,v) => localStorage.setItem(k, JSON.stringify(v))
+};
+const uid = () => Math.random().toString(36).slice(2,10);
+const kList = store => `rachel.grocery.${store}`;
+const getList = store => S.get(kList(store)) || [];
+
+// ── SWITCH STORE ───────────────────────────────────────────
+function switchStore(store, btn) {
+  currentStore = store;
+  document.querySelectorAll('.store-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderList();
+}
+
+// ── FILTER ────────────────────────────────────────────────
+function switchFilter(f, btn) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderList();
+}
+
+// ── RENDER ────────────────────────────────────────────────
+function renderList() {
+  const items = getList(currentStore);
+  const store = STORES[currentStore];
+  const c = document.getElementById('list-container');
+
+  const checked = items.filter(i => i.checked);
+  const unchecked = items.filter(i => !i.checked);
+
+  if (!items.length) {
+    c.innerHTML = `<div class="empty-state">
+      <div class="empty-title">No items yet</div>
+      Tap + to add your ${store.name} list.
+    </div>`;
+    return;
+  }
+
+  // Group by category
+  const visible = currentFilter === 'remaining' ? unchecked : items;
+  const cats = {};
+  visible.forEach(item => {
+    if (!cats[item.category]) cats[item.category] = [];
+    cats[item.category].push(item);
+  });
+
+  let html = '';
+
+  // Done banner
+  if (checked.length) {
+    html += `<div class="done-banner">
+      <span class="done-banner-txt">${checked.length} item${checked.length>1?'s':''} checked off</span>
+      <button class="clear-btn" onclick="clearChecked()">Clear</button>
+    </div>`;
+  }
+
+  if (!Object.keys(cats).length && currentFilter === 'remaining') {
+    html += `<div class="empty-state" style="padding:30px 24px;">
+      <div class="empty-title">All done!</div>
+      Everything on your ${store.name} list is checked off.
+    </div>`;
+  }
+
+  for (const [cat, catItems] of Object.entries(cats)) {
+    html += `<div class="cat-block">
+      <div class="cat-header" onclick="this.nextElementSibling.classList.toggle('collapsed')">
+        <span class="cat-name">${cat}</span>
+        <span class="cat-count">${catItems.length}</span>
+      </div>
+      <div class="cat-items">
+        ${catItems.map(item => itemHtml(item, currentStore)).join('')}
+      </div>
+    </div>`;
+  }
+
+  c.innerHTML = html;
+}
+
+function itemHtml(item, store) {
+  const s = STORES[store];
+  const searchQ = encodeURIComponent(item.name);
+  const instacartUrl = `https://www.instacart.com/store/${s.instacartSlug}/search_v3/${searchQ}`;
+  return `<div class="g-item${item.checked?' checked':''}">
+    <button class="g-check${item.checked?' done':''}" onclick="toggleItem('${item.id}')">
+      <svg viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2.5"><path d="M2 6l3 3 5-5"/></svg>
+    </button>
+    <span class="g-name${item.checked?' done':''}">${item.name}</span>
+    ${item.qty ? `<span class="g-qty">${item.qty}</span>` : ''}
+    <div class="g-actions">
+      <button class="instacart-btn ${store}" onclick="window.open('${instacartUrl}','_blank')" title="Search on Instacart">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" width="11" height="11"><circle cx="11" cy="11" r="3"/><path d="M2 2h2l2 7h6"/></svg>
+        Shop
+      </button>
+      <button class="icon-btn" onclick="deleteItem('${item.id}')">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 4h10M6 4V2.5h4V4M6 7v5M10 7v5M4 4l.8 8h6.4L12 4"/></svg>
+      </button>
+    </div>
+  </div>`;
+}
+
+// ── ITEM ACTIONS ──────────────────────────────────────────
+function toggleItem(id) {
+  const items = getList(currentStore);
+  const item = items.find(i => i.id === id);
+  if (item) { item.checked = !item.checked; S.set(kList(currentStore), items); renderList(); }
+}
+
+function deleteItem(id) {
+  S.set(kList(currentStore), getList(currentStore).filter(i => i.id !== id));
+  renderList();
+}
+
+function clearChecked() {
+  S.set(kList(currentStore), getList(currentStore).filter(i => !i.checked));
+  renderList();
+}
+
+// ── ADD ITEM ──────────────────────────────────────────────
+function setAddStore(store) {
+  addStore = store;
+  document.getElementById('pill-publix').classList.toggle('active', store === 'publix');
+  document.getElementById('pill-costco').classList.toggle('active', store === 'costco');
+}
+
+function openAddSheet() {
+  addStore = currentStore;
+  document.getElementById('pill-publix').classList.toggle('active', currentStore === 'publix');
+  document.getElementById('pill-costco').classList.toggle('active', currentStore === 'costco');
+  document.getElementById('ai-name').value = '';
+  document.getElementById('ai-qty').value = '';
+  document.getElementById('ai-cat').value = '';
+  document.getElementById('sheet-add').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => document.getElementById('ai-name').focus(), 100);
+}
+
+function closeSheet() {
+  document.getElementById('sheet-add').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function addItem() {
+  const name = document.getElementById('ai-name').value.trim();
+  if (!name) return;
+  const qty = document.getElementById('ai-qty').value.trim();
+  const category = document.getElementById('ai-cat').value.trim() || 'Other';
+  const items = getList(addStore);
+  items.push({ id: uid(), name, qty, category, checked: false });
+  S.set(kList(addStore), items);
+  // Switch to the store we just added to
+  if (addStore !== currentStore) {
+    currentStore = addStore;
+    document.querySelectorAll('.store-tab').forEach(b => b.classList.remove('active'));
+    document.querySelector(`.store-tab.${addStore}`).classList.add('active');
+  }
+  closeSheet();
+  renderList();
+}
+
+document.getElementById('ai-name').addEventListener('keydown', e => { if (e.key === 'Enter') addItem(); });
+document.getElementById('sheet-add').addEventListener('click', e => { if (e.target === e.currentTarget) closeSheet(); });
+
+renderList();
+</script>
+</body>
+</html>

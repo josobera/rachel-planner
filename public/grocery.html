@@ -331,7 +331,7 @@ function renderList() {
 function itemHtml(item, store) {
   const s = STORES[store];
   const searchQ = encodeURIComponent(item.name);
-  const instacartUrl = `https://www.instacart.com/products/search?q=${searchQ}&retailerSlug=${s.instacartSlug}`;
+  const instacartUrl = `https://www.instacart.com/store/${s.instacartSlug}/search?q=${searchQ}`;
   return `<div class="g-item${item.checked?' checked':''}">
     <button class="g-check${item.checked?' done':''}" onclick="toggleItem('${item.id}')">
       <svg viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2.5"><path d="M2 6l3 3 5-5"/></svg>

@@ -124,7 +124,7 @@ const KEY = 'rachel.tasks';
 
 const DEFAULT_CATS = {
   Family:   ['#9A7B4C','#F0E8D7'],
-  Nanny:    ['#2F6E63','#E1EFEC'],
+  Laura:    ['#2F6E63','#E1EFEC'],
   Kids:     ['#4E89A6','#E6F0F2'],
   Grocery:  ['#A86A3F','#F3E6DA'],
   Personal: ['#3F7E99','#E3EFF1']
@@ -138,13 +138,13 @@ const CAT_COLORS = [
 function getTasks() {
   return S.get(KEY) || [
     {id:'t1',text:'Pick up Jackson from soccer',cat:'Family',when:'today',meta:'4:30 PM',notes:'',done:false},
-    {id:'t2',text:'Send Laura the Thursday plan',cat:'Nanny',when:'today',meta:'',notes:'',done:false},
+    {id:'t2',text:'Send Laura the Thursday plan',cat:'Laura',when:'today',meta:'',notes:'',done:false},
     {id:'t3',text:'Grocery for taco night',cat:'Grocery',when:'today',meta:'',notes:'',done:false},
     {id:'t4',text:'Text Matt about the weekend',cat:'Family',when:'today',meta:'',notes:'',done:false},
     {id:'t5',text:'Return Amazon package',cat:'Personal',when:'today',meta:'',notes:'',done:true},
     {id:'t6',text:"Order Pearson's kindergarten supplies",cat:'Kids',when:'week',meta:'Thu',notes:'',done:false},
     {id:'t7',text:"Schedule Parker's 3-year checkup",cat:'Kids',when:'week',meta:'',notes:'',done:false},
-    {id:'t8',text:'Laura — pediatrician forms for Pearson',cat:'Nanny',when:'week',meta:'',notes:'',done:false},
+    {id:'t8',text:'Laura — pediatrician forms for Pearson',cat:'Laura',when:'week',meta:'',notes:'',done:false},
     {id:'t9',text:"Refill Jackson's inhaler",cat:'Family',when:'week',meta:'',notes:'',done:false}
   ];
 }

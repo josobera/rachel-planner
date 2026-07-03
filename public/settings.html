@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F5F2EA">
+<title>Settings · Rachel's Planner</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,400;1,500&family=Mulish:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Mulish',-apple-system,'Segoe UI',sans-serif;background:#F5F2EA;color:#2C3E45;-webkit-font-smoothing:antialiased}
+  .app{max-width:440px;margin:0 auto;min-height:100vh;background:#F5F2EA;padding-bottom:60px}
+  .serif{font-family:'Lora',serif}
+  .top{position:sticky;top:0;z-index:10;background:rgba(245,242,234,.92);backdrop-filter:blur(8px);display:flex;align-items:center;gap:12px;padding:calc(20px + env(safe-area-inset-top,0)) 18px 13px;border-bottom:1px solid #E6E2D6}
+  .back{width:36px;height:36px;border-radius:50%;background:#fff;border:1px solid #E6E2D6;display:flex;align-items:center;justify-content:center;color:#3F7E99;text-decoration:none;font-size:22px;line-height:1;padding-bottom:3px}
+  .body{padding:20px 18px 32px;display:flex;flex-direction:column;gap:24px}
+  .section-label{font-weight:700;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#3F7E99;margin-bottom:10px}
+  .card{background:#fff;border:1px solid #E6E2D6;border-radius:16px;overflow:hidden;box-shadow:0 1px 6px rgba(44,62,69,.06)}
+  .card-row{display:flex;align-items:center;gap:14px;padding:14px 16px;border-bottom:1px solid #F0EEE5;cursor:pointer;transition:background .12s}
+  .card-row:last-child{border-bottom:none}
+  .card-row:active{background:#F7F5EF}
+  .row-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex:none}
+  .row-text{flex:1}
+  .row-title{font-weight:600;font-size:14px;color:#2C3E45}
+  .row-sub{font-size:12px;color:#8AA0A3;margin-top:1px}
+  .chevron{color:#C8D4D6}
+  /* FAQ */
+  .faq-item{border-bottom:1px solid #F0EEE5}
+  .faq-item:last-child{border-bottom:none}
+  .faq-q{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;cursor:pointer;gap:12px}
+  .faq-q span{font-weight:600;font-size:14px;color:#2C3E45;flex:1}
+  .faq-icon{color:#3F7E99;flex:none;transition:transform .2s;font-size:18px;line-height:1}
+  .faq-item.open .faq-icon{transform:rotate(45deg)}
+  .faq-a{display:none;padding:0 16px 14px;font-size:13px;color:#5A7681;line-height:1.6}
+  .faq-item.open .faq-a{display:block}
+  /* Report form */
+  .field{display:flex;flex-direction:column;gap:5px;margin-bottom:13px;padding:0 16px}
+  .field-label{font-weight:700;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:#3F7E99}
+  .field select,.field textarea,.field input{border:1.5px solid #E6E2D6;border-radius:10px;padding:10px 12px;font-family:inherit;font-size:14px;color:#2C3E45;background:#F9F8F5;outline:none;width:100%}
+  .field select:focus,.field textarea:focus,.field input:focus{border-color:#3F7E99;background:#fff}
+  .field textarea{resize:none;height:90px}
+  .submit-row{padding:4px 16px 16px}
+  .btn-primary{width:100%;padding:13px;border-radius:12px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;border:none;background:#3F7E99;color:#fff;transition:.15s}
+  .btn-primary:active{opacity:.85}
+  /* Version */
+  .version{text-align:center;font-size:12px;color:#B0BCBE;padding-top:8px}
+  /* Toast */
+  .toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(16px);background:#2C3E45;color:#F5F2EA;font-size:13px;font-weight:600;padding:11px 18px;border-radius:14px;opacity:0;transition:.25s;pointer-events:none;z-index:99;box-shadow:0 8px 24px rgba(44,62,69,.25)}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <a class="back" href="/" aria-label="Back to home">&lsaquo;</a>
+    <span class="serif" style="font-weight:600;font-size:22px">Settings</span>
+    <div style="width:36px"></div>
+  </div>
+
+  <div class="body">
+
+    <!-- ABOUT -->
+    <div>
+      <div class="section-label">About this app</div>
+      <div class="card">
+        <div class="card-row" style="cursor:default">
+          <div class="row-icon" style="background:#E3EFF4">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3F7E99" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </div>
+          <div class="row-text">
+            <div class="row-title">Rachel's Planner</div>
+            <div class="row-sub">Made with love by Jenny · Version 1.0</div>
+          </div>
+        </div>
+        <div class="card-row" style="cursor:default">
+          <div class="row-icon" style="background:#F0EDE5">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9A7B4C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+          </div>
+          <div class="row-text">
+            <div class="row-title">Add to Home Screen</div>
+            <div class="row-sub">Tap Share in Safari → Add to Home Screen</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- REPORT -->
+    <div>
+      <div class="section-label">Send feedback to Jenny</div>
+      <div class="card">
+        <div style="padding:14px 16px 6px">
+          <p style="font-size:13px;color:#5A7681;line-height:1.55">Found something broken or have an idea? Let Jenny know and she'll get it fixed.</p>
+        </div>
+        <div style="height:12px"></div>
+        <div class="field">
+          <label class="field-label">Type</label>
+          <select id="report-type">
+            <option value="bug">Something is broken</option>
+            <option value="request">I have an idea / request</option>
+            <option value="question">I have a question</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="field-label">What's going on?</label>
+          <textarea id="report-body" placeholder="Describe what happened or what you'd love to see…"></textarea>
+        </div>
+        <div class="submit-row">
+          <button class="btn-primary" onclick="submitReport()">Send to Jenny</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQ -->
+    <div>
+      <div class="section-label">FAQ & Troubleshooting</div>
+      <div class="card" id="faq-list"></div>
+    </div>
+
+    <div class="version">rachel-planner.pages.dev</div>
+
+  </div>
+</div>
+<div class="toast" id="toastEl"></div>
+
+<script>
+const FAQS = [
+  {
+    q: "The app looks outdated or something seems off",
+    a: "Your phone may have an older version saved. Try this: In Safari, go to Settings → Safari → Clear History and Website Data, then reopen the app. You only need to do this once."
+  },
+  {
+    q: "My items disappeared after I closed the app",
+    a: "Everything is saved on your device using local storage. If you cleared Safari's website data, that would erase it. Going forward, your data stays put as long as you don't clear Safari data."
+  },
+  {
+    q: "The Shop button on a grocery item goes to a search instead of my item",
+    a: "You can link any grocery item to its exact Instacart product page. Open Instacart in Safari, find your item, copy the URL from the address bar, then tap the item in your grocery list and paste that URL into the Instacart link field."
+  },
+  {
+    q: "How do I delete sample / example data?",
+    a: "Tap any task, trip, or item to open it, then tap Delete. The starter content is just there to show you how things work — feel free to wipe it all and start fresh."
+  },
+  {
+    q: "Push notifications aren't working",
+    a: "Make sure you've allowed notifications for Safari. Go to Settings → Safari → Advanced → Website Data, or check Settings → Notifications → Safari. Then reopen the app and it will ask again."
+  },
+  {
+    q: "The weather or location isn't showing on my trip",
+    a: "Make sure you've entered a destination on the trip. Tap the location field and choose a suggestion from the dropdown — it needs a recognized location name to pull weather."
+  },
+  {
+    q: "Can I use this on my computer too?",
+    a: "Yes! Just go to rachel-planner.pages.dev in any browser. Keep in mind that data saved on your phone won't automatically sync to your computer yet — that's something Jenny can add later."
+  },
+  {
+    q: "I want something added or changed",
+    a: "Use the feedback form above to send Jenny a note — she loves improving the app!"
+  }
+];
+
+document.getElementById('faq-list').innerHTML = FAQS.map((f,i) => `
+  <div class="faq-item" id="faq-${i}">
+    <div class="faq-q" onclick="toggleFaq(${i})">
+      <span>${f.q}</span>
+      <span class="faq-icon">+</span>
+    </div>
+    <div class="faq-a">${f.a}</div>
+  </div>`).join('');
+
+function toggleFaq(i) {
+  const el = document.getElementById('faq-' + i);
+  el.classList.toggle('open');
+}
+
+function submitReport() {
+  const type = document.getElementById('report-type').value;
+  const body = document.getElementById('report-body').value.trim();
+  if (!body) { toast('Please describe the issue first'); return; }
+  const labels = { bug: '🐛 Bug report', request: '💡 Feature request', question: '❓ Question' };
+  const subject = encodeURIComponent(labels[type] + ' — Rachel\'s Planner');
+  const msg = encodeURIComponent(body + '\n\n— Sent from Rachel\'s Planner app');
+  window.location.href = `mailto:sdsm99cchv@privaterelay.appleid.com?subject=${subject}&body=${msg}`;
+  document.getElementById('report-body').value = '';
+  toast('Opening your mail app…');
+}
+
+let tt;
+function toast(m) { const e=document.getElementById('toastEl'); e.textContent=m; e.classList.add('show'); clearTimeout(tt); tt=setTimeout(()=>e.classList.remove('show'),2200); }
+</script>
+</body>
+</html>

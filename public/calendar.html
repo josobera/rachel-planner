@@ -57,11 +57,11 @@
 </div>
 
 <script>
-const RAW_URLS = [
-  'https://p58-caldav.icloud.com/published/2/MTc5MjQxODIwMTc5MjQxODwAAW3ZHUhov4D1qVg32ftrpSHBx-jFXUoth4Qv1M__'
-];
-// iCloud blocks direct cross-origin fetches — route through corsproxy.io
-const CAL_URLS = RAW_URLS.map(u => 'https://corsproxy.io/?' + encodeURIComponent(u));
+async function fetchICS() {
+  const res = await fetch('/calendar-proxy');
+  if (!res.ok) throw new Error('Could not load calendar');
+  return res.text();
+}
 
 const DOT_COLORS = ['#3F7E99','#B2925F','#5A8B72','#D99B6C','#8B6BA0'];
 
@@ -120,15 +120,9 @@ function fmtDayLabel(date) {
 async function load() {
   const body = document.getElementById('body');
   try {
-    const allEvents = [];
-    for (let i = 0; i < CAL_URLS.length; i++) {
-      const res = await fetch(CAL_URLS[i]);
-      if (!res.ok) throw new Error('Could not load calendar');
-      const text = await res.text();
-      const evts = parseICS(text);
-      evts.forEach(e => { e.color = DOT_COLORS[i % DOT_COLORS.length]; });
-      allEvents.push(...evts);
-    }
+    const text = await fetchICS();
+    const allEvents = parseICS(text);
+    allEvents.forEach((e, i) => { e.color = DOT_COLORS[i % DOT_COLORS.length]; });
 
     const now = new Date();
     const cutoff = new Date(now); cutoff.setDate(cutoff.getDate() + 30);

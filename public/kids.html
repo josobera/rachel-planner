@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#F5F2EA">
-<title>Kids · My Day</title>
+<title>Kids · Rachel's Planner</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,12 +16,12 @@
   .serif{font-family:'Lora',serif}
   .top{position:sticky;top:0;z-index:10;background:rgba(245,242,234,.92);backdrop-filter:blur(8px);display:flex;align-items:center;gap:12px;padding:calc(20px + env(safe-area-inset-top,0)) 18px 13px;border-bottom:1px solid #E6E2D6}
   .back{width:36px;height:36px;border-radius:50%;background:#fff;border:1px solid #E6E2D6;display:flex;align-items:center;justify-content:center;color:#3F7E99;cursor:pointer;text-decoration:none;font-size:22px;line-height:1;padding-bottom:3px}
-  .body{padding:16px 18px 32px;display:flex;flex-direction:column;gap:14px}
+  .body{padding:16px 18px 100px;display:flex;flex-direction:column;gap:14px}
   .card{background:#fff;border:1px solid #E6E2D6;border-radius:18px;padding:16px;box-shadow:0 1px 6px rgba(44,62,69,.06)}
   .lbl{font-weight:700;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:#3F7E99}
   .kidsel{display:flex;gap:14px;flex-wrap:wrap;padding:9px 6px 3px}
   .kidchip{flex:none;display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;background:none;border:none;font-family:inherit}
-  .kidchip .av{width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Lora',serif;font-weight:600;font-size:23px;color:#fff;border:3px solid transparent;transition:.15s}
+  .kidchip .av{width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Lora',serif;font-weight:600;font-size:23px;color:#fff;transition:.15s}
   .kidchip.active .av{box-shadow:0 0 0 3px #F5F2EA,0 0 0 6px #3F7E99}
   .kidchip span{font-weight:600;font-size:12px;color:#8AA0A3}
   .kidchip.active span{color:#2C3E45}
@@ -32,16 +32,42 @@
   .size .v{font-family:'Lora',serif;font-weight:600;font-size:24px;color:#2C3E45;margin-top:1px}
   .row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #F0EEE5}
   .row:last-child{border-bottom:none}
+  .row-action{font-size:11px;font-weight:600;color:#3F7E99;cursor:pointer;flex:none}
+  .fab{position:fixed;bottom:calc(24px + env(safe-area-inset-bottom,0));right:24px;width:54px;height:54px;border-radius:50%;background:#3F7E99;color:#fff;border:none;font-size:26px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(63,126,153,.35);z-index:20}
+  /* Sheet */
+  .sheet-overlay{position:fixed;inset:0;background:rgba(44,62,69,.35);z-index:50;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .2s}
+  .sheet-overlay.open{opacity:1;pointer-events:all}
+  .sheet{background:#fff;border-radius:22px 22px 0 0;padding:0 20px calc(32px + env(safe-area-inset-bottom,0));width:100%;max-height:88vh;overflow-y:auto;transform:translateY(100%);transition:transform .25s cubic-bezier(.32,1,.23,1)}
+  .sheet-overlay.open .sheet{transform:translateY(0)}
+  .sheet-handle{width:36px;height:4px;background:#E6E2D6;border-radius:2px;margin:12px auto 16px}
+  .sheet-title{font-family:'Lora',serif;font-weight:600;font-size:20px;margin-bottom:18px;color:#2C3E45}
+  .field{display:flex;flex-direction:column;gap:5px;margin-bottom:13px}
+  .field-label{font-weight:700;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:#3F7E99}
+  .field input,.field textarea{border:1.5px solid #E6E2D6;border-radius:10px;padding:10px 12px;font-family:inherit;font-size:14px;color:#2C3E45;background:#fff;outline:none;width:100%}
+  .field input:focus,.field textarea:focus{border-color:#3F7E99}
+  .field textarea{resize:none;height:72px}
+  .field-row{display:flex;gap:10px;margin-bottom:13px}
+  .field-row .field{flex:1;margin-bottom:0}
+  .sheet-actions{display:flex;gap:10px;margin-top:6px}
+  .btn{flex:1;padding:13px;border-radius:12px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;border:none;transition:.15s}
+  .btn-ghost{background:#F0EDE5;color:#2C3E45}
+  .btn-primary{background:#3F7E99;color:#fff}
+  .btn-danger{background:#E8B4B4;color:#8B2020}
+  .color-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:13px}
+  .color-dot{width:32px;height:32px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:.1s}
+  .color-dot.selected{border-color:#2C3E45}
   .toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(16px);background:#2C3E45;color:#F5F2EA;font-size:13px;font-weight:600;padding:11px 18px;border-radius:14px;opacity:0;transition:.25s;pointer-events:none;z-index:99;box-shadow:0 8px 24px rgba(44,62,69,.25)}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .empty-state{text-align:center;padding:32px 20px;color:#8AA0A3;font-size:14px}
+  .empty-title{font-family:'Lora',serif;font-weight:600;font-size:18px;color:#2C3E45;margin-bottom:6px}
 </style>
 </head>
 <body>
 <div class="app">
   <div class="top">
-    <a class="back" href="index.html" aria-label="Back to home">&lsaquo;</a>
+    <a class="back" href="/" aria-label="Back to home">&lsaquo;</a>
     <span class="serif" style="font-weight:600;font-size:22px">Kids</span>
-    <span style="margin-left:auto;font-weight:600;font-size:13px;color:#8AA0A3" id="ageHint"></span>
+    <button onclick="openAddKid()" style="margin-left:auto;background:none;border:none;font-family:inherit;font-size:13px;font-weight:700;color:#3F7E99;cursor:pointer">+ Add kid</button>
   </div>
   <div class="body">
     <div class="kidsel" id="kidsel"></div>
@@ -50,72 +76,318 @@
 </div>
 <div class="toast" id="toastEl"></div>
 
+<!-- Add/Edit Kid sheet -->
+<div class="sheet-overlay" id="sheet-kid">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title" id="kid-sheet-title">Add Kid</div>
+    <div class="field"><label class="field-label">Name</label><input type="text" id="k-name" placeholder="e.g. Jackson"></div>
+    <div class="field-row">
+      <div class="field"><label class="field-label">Age</label><input type="number" id="k-age" placeholder="8" min="0" max="18"></div>
+      <div class="field" style="flex:2"><label class="field-label">School / Grade</label><input type="text" id="k-school" placeholder="e.g. 3rd grade · Lincoln"></div>
+    </div>
+    <div class="field"><label class="field-label">Color</label></div>
+    <div class="color-row" id="color-row"></div>
+    <div class="field"><label class="field-label">Notes / Gift ideas</label><textarea id="k-notes" placeholder="Loves dinosaurs, Legos..."></textarea></div>
+    <div class="sheet-actions" id="kid-actions"></div>
+  </div>
+</div>
+
+<!-- Edit Size sheet -->
+<div class="sheet-overlay" id="sheet-size">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title" id="size-sheet-title">Update Size</div>
+    <div class="field"><label class="field-label" id="size-label">Shirt</label><input type="text" id="size-val" placeholder="e.g. 8"></div>
+    <div class="sheet-actions">
+      <button class="btn btn-ghost" onclick="closeSheet('sheet-size')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveSize()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit Activity sheet -->
+<div class="sheet-overlay" id="sheet-activity">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title" id="activity-sheet-title">Add Activity</div>
+    <div class="field"><label class="field-label">Activity</label><input type="text" id="act-name" placeholder="e.g. Soccer"></div>
+    <div class="field"><label class="field-label">Schedule</label><input type="text" id="act-when" placeholder="e.g. Tue & Thu · 4:30"></div>
+    <div class="sheet-actions" id="activity-actions"></div>
+  </div>
+</div>
+
 <script>
-  const KIDS = [
-    {name:'Jackson', age:8, color:'#3F7E99', school:'3rd grade · Liberty Park Elementary',
+const COLORS = ['#3F7E99','#5FA39B','#B2925F','#7E6B8F','#4A8C6F','#C4784A','#8B5E83','#4A7C8C'];
+const S = {
+  get: k => { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } },
+  set: (k,v) => localStorage.setItem(k, JSON.stringify(v))
+};
+const uid = () => Math.random().toString(36).slice(2,10);
+const KEY = 'rachel.kids';
+
+function getKids() {
+  return S.get(KEY) || [
+    {id:'k1', name:'Jackson', age:8, color:'#3F7E99', school:'3rd grade · Liberty Park Elementary',
      sizes:{Shirt:'8', Pants:'8', Shoe:'2.5Y', Jacket:'8'},
-     activities:[['Soccer','Tue & Thu · 4:30'],['Swim team','Sat · 9:00']],
+     activities:[{id:'a1',name:'Soccer',when:'Tue & Thu · 4:30'},{id:'a2',name:'Swim team',when:'Sat · 9:00'}],
      notes:'Loves dinosaurs and Legos. Into chapter books right now.'},
-    {name:'Pearson', age:4, color:'#5FA39B', school:'Starting kindergarten · Liberty Park',
+    {id:'k2', name:'Pearson', age:4, color:'#5FA39B', school:'Starting kindergarten · Liberty Park',
      sizes:{Shirt:'5T', Pants:'5T', Shoe:'11C', Jacket:'5'},
-     activities:[['T-ball','Sat · 10:00']],
+     activities:[{id:'a3',name:'T-ball',when:'Sat · 10:00'}],
      notes:'Trucks and soccer. Starts kindergarten in the fall.'},
-    {name:'Parker', age:3, color:'#B2925F', school:'PALS Mother’s Day Out',
+    {id:'k3', name:'Parker', age:3, color:'#B2925F', school:'PALS Mother\'s Day Out',
      sizes:{Shirt:'4T', Pants:'3T', Shoe:'9C', Jacket:'4'},
-     activities:[['PALS MDO','Mon & Wed']],
+     activities:[{id:'a4',name:'PALS MDO',when:'Mon & Wed'}],
      notes:'Loves being read to and the splash pad.'}
   ];
-  let sel = 0;
+}
+function saveKids(kids) { S.set(KEY, kids); }
 
-  function renderSel(){
-    document.getElementById('kidsel').innerHTML = KIDS.map((k,i)=>`
-      <button class="kidchip ${i===sel?'active':''}" onclick="sel=${i};render()">
-        <span class="av" style="background:${k.color}">${k.name[0]}</span>
-        <span>${k.name}</span>
-      </button>`).join('');
+let sel = 0;
+let editingKidId = null;
+let editingActId = null;
+let editingSizeKey = null;
+let selectedColor = COLORS[0];
+
+// ── RENDER ─────────────────────────────────────────────────
+function render() { renderSel(); renderDetail(); }
+
+function renderSel() {
+  const kids = getKids();
+  if (!kids.length) {
+    document.getElementById('kidsel').innerHTML = '<div class="empty-state"><div class="empty-title">No kids yet</div>Tap + Add kid to get started.</div>';
+    document.getElementById('detail').innerHTML = '';
+    return;
   }
+  if (sel >= kids.length) sel = 0;
+  document.getElementById('kidsel').innerHTML = kids.map((k,i) => `
+    <button class="kidchip ${i===sel?'active':''}" onclick="sel=${i};render()">
+      <span class="av" style="background:${k.color}">${k.name[0]}</span>
+      <span>${k.name}</span>
+    </button>`).join('');
+}
 
-  function renderDetail(){
-    const k = KIDS[sel];
-    document.getElementById('ageHint').textContent = '3 kids';
-    document.getElementById('detail').innerHTML = `
-      <div class="card">
-        <div class="serif" style="font-weight:600;font-size:24px">${k.name}<span style="font-size:15px;color:#8AA0A3;font-weight:500"> · age ${k.age}</span></div>
-        <div style="font-weight:500;font-size:13px;color:#5A7681;margin-top:4px">${k.school}</div>
-      </div>
-
-      <div class="card">
-        <div style="display:flex;align-items:center"><span class="lbl">Sizes</span><span style="margin-left:auto;font-weight:500;font-size:11px;color:#8AA0A3">tap to update</span></div>
-        <div class="sizes">
-          ${Object.entries(k.sizes).map(([key,val])=>`
-            <div class="size" onclick="toast('Editing sizes comes with your live data')">
-              <div class="k">${key}</div><div class="v">${val}</div>
-            </div>`).join('')}
+function renderDetail() {
+  const kids = getKids();
+  if (!kids.length) return;
+  const k = kids[sel];
+  document.getElementById('detail').innerHTML = `
+    <div class="card">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between">
+        <div>
+          <div class="serif" style="font-weight:600;font-size:24px">${k.name}<span style="font-size:15px;color:#8AA0A3;font-weight:500"> · age ${k.age}</span></div>
+          <div style="font-weight:500;font-size:13px;color:#5A7681;margin-top:4px">${k.school||''}</div>
         </div>
+        <button onclick="openEditKid('${k.id}')" style="background:none;border:none;font-size:11px;font-weight:700;color:#3F7E99;cursor:pointer;margin-top:4px">Edit</button>
       </div>
+    </div>
 
-      <div class="card">
+    <div class="card">
+      <div style="display:flex;align-items:center"><span class="lbl">Sizes</span><span style="margin-left:auto;font-size:11px;font-weight:500;color:#8AA0A3">tap to update</span></div>
+      <div class="sizes">
+        ${Object.entries(k.sizes||{}).map(([key,val]) => `
+          <div class="size" onclick="openEditSize('${k.id}','${key}')">
+            <div class="k">${key}</div><div class="v">${val||'—'}</div>
+          </div>`).join('')}
+        <div class="size" style="border-style:dashed;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#8AA0A3;font-size:12px;font-weight:600" onclick="openAddSize('${k.id}')">+ Add</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="display:flex;align-items:center;margin-bottom:8px">
         <span class="lbl">Activities</span>
-        <div style="margin-top:8px">
-          ${k.activities.map(([a,when])=>`
-            <div class="row">
-              <span style="width:8px;height:8px;border-radius:50%;background:${k.color};flex:none"></span>
-              <span style="flex:1;font-weight:500;font-size:14px">${a}</span>
-              <span style="font-weight:500;font-size:12px;color:#8AA0A3">${when}</span>
-            </div>`).join('')}
-        </div>
+        <button onclick="openAddActivity('${k.id}')" style="margin-left:auto;background:none;border:none;font-size:11px;font-weight:700;color:#3F7E99;cursor:pointer">+ Add</button>
       </div>
+      ${(k.activities||[]).length ? (k.activities||[]).map(a => `
+        <div class="row">
+          <span style="width:8px;height:8px;border-radius:50%;background:${k.color};flex:none"></span>
+          <span style="flex:1;font-weight:500;font-size:14px">${a.name}</span>
+          <span style="font-weight:500;font-size:12px;color:#8AA0A3;margin-right:8px">${a.when}</span>
+          <span class="row-action" onclick="openEditActivity('${k.id}','${a.id}')">Edit</span>
+        </div>`).join('') : '<div style="color:#8AA0A3;font-size:13px;padding:8px 0">No activities yet.</div>'}
+    </div>
 
-      <div class="card">
-        <span class="lbl">Notes & gift ideas</span>
-        <div class="serif" style="font-style:italic;font-size:15px;line-height:1.5;color:#2C3E45;margin-top:8px">${k.notes}</div>
-      </div>`;
+    <div class="card">
+      <div style="display:flex;align-items:center;margin-bottom:8px">
+        <span class="lbl">Notes & Gift ideas</span>
+        <button onclick="openEditKid('${k.id}')" style="margin-left:auto;background:none;border:none;font-size:11px;font-weight:700;color:#3F7E99;cursor:pointer">Edit</button>
+      </div>
+      <div class="serif" style="font-style:italic;font-size:15px;line-height:1.5;color:#2C3E45">${k.notes||'<span style="color:#8AA0A3">No notes yet.</span>'}</div>
+    </div>`;
+}
+
+// ── KID SHEET ──────────────────────────────────────────────
+function renderColorRow() {
+  document.getElementById('color-row').innerHTML = COLORS.map(c => `
+    <div class="color-dot${c===selectedColor?' selected':''}" style="background:${c}" onclick="selectedColor='${c}';renderColorRow()"></div>`).join('');
+}
+
+function openAddKid() {
+  editingKidId = null;
+  selectedColor = COLORS[sel % COLORS.length];
+  document.getElementById('kid-sheet-title').textContent = 'Add Kid';
+  document.getElementById('k-name').value = '';
+  document.getElementById('k-age').value = '';
+  document.getElementById('k-school').value = '';
+  document.getElementById('k-notes').value = '';
+  document.getElementById('kid-actions').innerHTML = `
+    <button class="btn btn-ghost" onclick="closeSheet('sheet-kid')">Cancel</button>
+    <button class="btn btn-primary" onclick="saveKid()">Add</button>`;
+  renderColorRow();
+  openSheet('sheet-kid');
+  setTimeout(() => document.getElementById('k-name').focus(), 100);
+}
+
+function openEditKid(id) {
+  const k = getKids().find(x => x.id === id);
+  if (!k) return;
+  editingKidId = id;
+  selectedColor = k.color;
+  document.getElementById('kid-sheet-title').textContent = 'Edit ' + k.name;
+  document.getElementById('k-name').value = k.name;
+  document.getElementById('k-age').value = k.age;
+  document.getElementById('k-school').value = k.school || '';
+  document.getElementById('k-notes').value = k.notes || '';
+  document.getElementById('kid-actions').innerHTML = `
+    <button class="btn btn-ghost" onclick="closeSheet('sheet-kid')">Cancel</button>
+    <button class="btn btn-danger" onclick="deleteKid('${id}')">Delete</button>
+    <button class="btn btn-primary" onclick="saveKid()">Save</button>`;
+  renderColorRow();
+  openSheet('sheet-kid');
+}
+
+function saveKid() {
+  const name = document.getElementById('k-name').value.trim();
+  if (!name) return;
+  const kids = getKids();
+  if (editingKidId) {
+    const k = kids.find(x => x.id === editingKidId);
+    if (k) { k.name = name; k.age = parseInt(document.getElementById('k-age').value)||0; k.school = document.getElementById('k-school').value.trim(); k.color = selectedColor; k.notes = document.getElementById('k-notes').value.trim(); }
+  } else {
+    kids.push({id: uid(), name, age: parseInt(document.getElementById('k-age').value)||0, school: document.getElementById('k-school').value.trim(), color: selectedColor, sizes: {Shirt:'', Pants:'', Shoe:'', Jacket:''}, activities:[], notes: document.getElementById('k-notes').value.trim()});
+    sel = kids.length - 1;
   }
-
-  function render(){ renderSel(); renderDetail(); }
-  let tt;
-  function toast(m){ const e=document.getElementById('toastEl'); e.textContent=m; e.classList.add('show'); clearTimeout(tt); tt=setTimeout(()=>e.classList.remove('show'),1900); }
+  saveKids(kids);
+  closeSheet('sheet-kid');
   render();
+}
+
+function deleteKid(id) {
+  const kids = getKids().filter(x => x.id !== id);
+  saveKids(kids);
+  sel = Math.max(0, sel - 1);
+  closeSheet('sheet-kid');
+  render();
+}
+
+// ── SIZE SHEET ─────────────────────────────────────────────
+function openEditSize(kidId, key) {
+  editingKidId = kidId;
+  editingSizeKey = key;
+  const k = getKids().find(x => x.id === kidId);
+  document.getElementById('size-sheet-title').textContent = 'Update ' + key;
+  document.getElementById('size-label').textContent = key;
+  document.getElementById('size-val').value = (k && k.sizes && k.sizes[key]) || '';
+  openSheet('sheet-size');
+  setTimeout(() => document.getElementById('size-val').focus(), 100);
+}
+
+function openAddSize(kidId) {
+  editingKidId = kidId;
+  editingSizeKey = '__new__';
+  document.getElementById('size-sheet-title').textContent = 'Add Size';
+  document.getElementById('size-label').textContent = 'Category (e.g. Dress, Shorts)';
+  document.getElementById('size-val').value = '';
+  openSheet('sheet-size');
+  setTimeout(() => document.getElementById('size-val').focus(), 100);
+}
+
+function saveSize() {
+  const val = document.getElementById('size-val').value.trim();
+  if (!val) { closeSheet('sheet-size'); return; }
+  const kids = getKids();
+  const k = kids.find(x => x.id === editingKidId);
+  if (!k) return;
+  if (editingSizeKey === '__new__') {
+    const label = prompt('Size category name (e.g. Dress):');
+    if (!label) { closeSheet('sheet-size'); return; }
+    k.sizes[label] = val;
+  } else {
+    k.sizes[editingSizeKey] = val;
+  }
+  saveKids(kids);
+  closeSheet('sheet-size');
+  render();
+}
+
+// ── ACTIVITY SHEET ─────────────────────────────────────────
+function openAddActivity(kidId) {
+  editingKidId = kidId;
+  editingActId = null;
+  document.getElementById('activity-sheet-title').textContent = 'Add Activity';
+  document.getElementById('act-name').value = '';
+  document.getElementById('act-when').value = '';
+  document.getElementById('activity-actions').innerHTML = `
+    <button class="btn btn-ghost" onclick="closeSheet('sheet-activity')">Cancel</button>
+    <button class="btn btn-primary" onclick="saveActivity()">Add</button>`;
+  openSheet('sheet-activity');
+  setTimeout(() => document.getElementById('act-name').focus(), 100);
+}
+
+function openEditActivity(kidId, actId) {
+  editingKidId = kidId;
+  editingActId = actId;
+  const k = getKids().find(x => x.id === kidId);
+  const a = (k?.activities||[]).find(x => x.id === actId);
+  if (!a) return;
+  document.getElementById('activity-sheet-title').textContent = 'Edit Activity';
+  document.getElementById('act-name').value = a.name;
+  document.getElementById('act-when').value = a.when;
+  document.getElementById('activity-actions').innerHTML = `
+    <button class="btn btn-ghost" onclick="closeSheet('sheet-activity')">Cancel</button>
+    <button class="btn btn-danger" onclick="deleteActivity('${kidId}','${actId}')">Delete</button>
+    <button class="btn btn-primary" onclick="saveActivity()">Save</button>`;
+  openSheet('sheet-activity');
+}
+
+function saveActivity() {
+  const name = document.getElementById('act-name').value.trim();
+  if (!name) return;
+  const when = document.getElementById('act-when').value.trim();
+  const kids = getKids();
+  const k = kids.find(x => x.id === editingKidId);
+  if (!k) return;
+  if (!k.activities) k.activities = [];
+  if (editingActId) {
+    const a = k.activities.find(x => x.id === editingActId);
+    if (a) { a.name = name; a.when = when; }
+  } else {
+    k.activities.push({id: uid(), name, when});
+  }
+  saveKids(kids);
+  closeSheet('sheet-activity');
+  render();
+}
+
+function deleteActivity(kidId, actId) {
+  const kids = getKids();
+  const k = kids.find(x => x.id === kidId);
+  if (k) k.activities = (k.activities||[]).filter(x => x.id !== actId);
+  saveKids(kids);
+  closeSheet('sheet-activity');
+  render();
+}
+
+// ── SHEET HELPERS ──────────────────────────────────────────
+function openSheet(id) { document.getElementById(id).classList.add('open'); document.body.style.overflow='hidden'; }
+function closeSheet(id) { document.getElementById(id).classList.remove('open'); document.body.style.overflow=''; }
+document.querySelectorAll('.sheet-overlay').forEach(el => el.addEventListener('click', e => { if (e.target===el) closeSheet(el.id); }));
+
+let tt;
+function toast(m) { const e=document.getElementById('toastEl'); e.textContent=m; e.classList.add('show'); clearTimeout(tt); tt=setTimeout(()=>e.classList.remove('show'),1900); }
+
+render();
 </script>
 </body>
 </html>

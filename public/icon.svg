@@ -6,7 +6,7 @@
     <path d="M256 152v26M256 318v26M148 248h26M338 248h26M180 172l18 18M332 172l-18 18"/>
   </g>
   <g fill="none" stroke="#4E89A6" stroke-width="13" stroke-linecap="round">
-    <path d="M104 358q44-26 88 0t88 0t88 0" opacity=".9"/>
-    <path d="M104 406q44-26 88 0t88 0t88 0" opacity=".65"/>
+    <path d="M124 358q44-26 88 0t88 0t88 0" opacity=".9"/>
+    <path d="M124 406q44-26 88 0t88 0t88 0" opacity=".65"/>
   </g>
 </svg>

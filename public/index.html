@@ -58,7 +58,7 @@
       </span>
     </div>
 
-    <div class="greet">Good morning, <span style="font-style:italic;font-weight:500">Rachel</span></div>
+    <div class="greet" id="greet">Good morning, <span style="font-style:italic;font-weight:500">Rachel</span></div>
 
     <div style="position:relative;display:flex;align-items:flex-end;justify-content:space-between;margin-top:14px">
       <div>
@@ -129,7 +129,7 @@
   let tt;
   function toast(msg){ const e=document.getElementById('toastEl'); e.textContent=msg; e.classList.add('show'); clearTimeout(tt); tt=setTimeout(()=>e.classList.remove('show'),1900); }
 
-  (function(){ const d=new Date(); const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']; const mons=['January','February','March','April','May','June','July','August','September','October','November','December']; document.getElementById('dateLabel').textContent = days[d.getDay()] + ' · ' + mons[d.getMonth()] + ' ' + d.getDate(); })();
+  (function(){ const d=new Date(); const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']; const mons=['January','February','March','April','May','June','July','August','September','October','November','December']; document.getElementById('dateLabel').textContent = days[d.getDay()] + ' · ' + mons[d.getMonth()] + ' ' + d.getDate(); const h=d.getHours(); const g=h<12?'Good morning':h<17?'Good afternoon':'Good evening'; document.getElementById('greet').innerHTML=g+', <span style="font-style:italic;font-weight:500">Rachel</span>'; })();
 
   // ── Push notifications ──────────────────────────────────────────────────────
   const WORKER = 'https://rachel-planner-worker.jennysobera.workers.dev';

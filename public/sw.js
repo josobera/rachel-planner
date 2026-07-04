@@ -1,4 +1,4 @@
-const CACHE = 'rachel-v4';
+const CACHE = 'rachel-v5';
 const SHELL = ['/', '/index.html', '/tasks.html', '/kids.html', '/travel.html', '/grocery.html', '/settings.html', '/manifest.webmanifest', '/icon.svg'];
 
 self.addEventListener('install', e => {
